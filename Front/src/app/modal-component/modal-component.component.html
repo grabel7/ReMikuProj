@@ -1,0 +1,26 @@
+<div class="modal-header close-modal-container">
+
+  <h4 class="modal-title">Import Song</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+
+</div>
+<div class="modal-body ">
+  <!-- Conteúdo do Modal -->
+  <div class="form-row">
+    <div class="col-md-6 mb-3">
+      <label for="validationServer03">Youtube URL</label>
+      <input [(ngModel)]="videoUrl"
+      type="text" [ngClass]="{'is-invalid' : invalidUrl}" class="form-control" id="validationServer03" placeholder="Youtube URL" required>
+      <div class="invalid-feedback" *ngIf="invalidUrl">
+        Please provide a valid Youtube URL.
+      </div>
+    </div>
+
+    <div *ngIf="videoId">
+      <p>ID do Vídeo: {{ videoId }}</p>
+      {{historyImport | json}}
+    </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" (click)="extractVideoId()">Send</button>
+</div>

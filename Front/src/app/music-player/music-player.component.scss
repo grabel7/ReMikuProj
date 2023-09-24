@@ -1,0 +1,163 @@
+
+* {
+
+  font-family: 'Fjalla One', sans-serif;
+  color: #fafafa;
+  text-shadow: 0 0 3px #000000, 0 0 5px #000000;
+}
+.img-vynil {
+  max-width: 275px; /* Largura máxima da imagem */
+  max-height: 275px; /* Altura máxima da imagem */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centraliza vertical e horizontalmente */
+
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-359deg);
+  }
+}
+
+.audio-btns {
+  width: 200px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+a {
+  cursor: pointer;
+}
+
+.btn {
+  cursor: pointer;
+  border: unset;
+  box-shadow: unset;
+  background-color: unset;
+  font-size: 1.4rem;
+  color: #fafafa;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 3px 2px 7px 1px rgba(0, 0, 0, 0.24);
+}
+
+.btn:active {
+  transform: scale(0.98);
+  box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);}
+
+.progress {
+  height: 100%;
+  width: 0;
+  background-color: #007bff;
+}
+
+.bar { cursor: pointer; }
+
+.audio-progress {
+  width:100%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2rem;
+
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background-color: #ccc;
+  position: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.play {
+  background: linear-gradient(to right, #425ef0, #7854fb);
+  text-align: center;
+  border-radius: 100%;
+  padding: 1rem 1.2rem;
+}
+
+.inv-border {
+  padding-right: 5%;
+  padding-left: 5%;
+}
+
+.cabo {
+  flex-grow: 0;
+}
+
+/* GPT
+.audio-progress {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 80%;
+
+  .progress {
+    grid-column: 1/-1;
+    height: 0.4rem;
+    margin-bottom: 0.8rem;
+    cursor: pointer;
+    position: relative;
+
+    .background-progress-bar {
+      height: 100%;
+      width: 100%; // A barra de fundo deve cobrir toda a largura da div
+      background-color: #ccc;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1; // Coloque o fundo atrás da barra de progresso
+    }
+
+    .progress-bar {
+      background: linear-gradient(293deg, rgba(21, 73, 135, 1) 0%, rgba(28, 211, 231, 1) 71%);
+      height: 100%;
+      position: relative;
+      border-radius: 0.8rem;
+      z-index: 2; // Coloque a barra de progresso acima do fundo
+    }
+
+    .progress-head {
+      position: absolute;
+      background-color: #6aaceb;
+      height: 1.2rem;
+      width: 1.2rem;
+      top: 0;
+      left: 0;
+      transform: translate(-50%, -32%);
+      border-radius: 100%;
+      z-index: 3; // Coloque a cabeça de progresso acima de tudo
+      box-shadow: 0 0 0 3px #aaabf8;
+    }
+  }
+}
+*/
+
+.audio-btns {
+  width: 300px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn {
+  cursor: pointer;
+  border: unset;
+  box-shadow: unset;
+  background-color: unset;
+  font-size: 1.4rem;
+  color: #fafafa;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 3px 2px 7px 1px rgba(0, 0, 0, 0.24);
+}
+
+

@@ -1,0 +1,13 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap');
+@import 'bootstrap/dist/css/bootstrap.css';
+
+body, html{
+  background: rgb(18,69,130);
+  background: linear-gradient(0deg, rgb(10, 32, 59) 0%, rgb(66, 8, 8) 90%);
+  background-attachment: fixed;
+}
+
+a, button{
+  color: #fafafa;
+}

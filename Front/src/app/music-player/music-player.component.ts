@@ -1,0 +1,294 @@
+import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalComponent } from '../modal-component/modal-component.component'; // Importe o componente do Modal
+import { Subscription } from 'rxjs';
+
+//Services
+import { VideoImportService } from '../video-import.service';
+
+
+
+
+@Component({
+  selector: 'app-music-player',
+  templateUrl: './music-player.component.html',
+  styleUrls: ['./music-player.component.scss']
+})
+export class MusicPlayerComponent implements OnInit {
+  videoIds: Array<{ id: string, favorite: boolean }> = [
+    { id: 'dQw4w9WgXcQ', favorite: false },
+    { id: 'AQcOdxEmfEg', favorite: false },
+    { id: 'rudkEqI8aIU', favorite: false }
+  ];
+  history: string[] = []
+
+  isPaused: boolean = false;
+  isHided: boolean = true;
+  isMobile: boolean = false;
+  isMuted: boolean = false;
+
+  videoCurrentTime: string = '0:00';
+  videoDuration: string = '0:00';
+  videoTitle: string = '';
+  videoAuthor: string = '';
+  videoUrl: string = '';
+  iconName: string = this.isPaused ? 'play' : 'pause'
+
+  volume: number = 50;
+  currentIndex: number = 0;
+
+  player: any;
+  historyId: any = '';
+
+  isFavorite: boolean = this.videoIds[this.currentIndex].favorite;
+
+
+  private videoSubscription: Subscription  | null = null; // Inicialize com null
+
+
+  constructor(private modalService: NgbModal, private videoImportService: VideoImportService) {}
+
+  //progressPercentage: number = 50; // Por exemplo, 50% de progresso
+
+  //get progressWidth(): string {
+    //return `${this.progressPercentage}%`;
+  //}
+
+  ngOnInit() {
+
+    this.isMobile = this.checkIfMobile();
+    // Crie uma promessa para aguardar o carregamento da API do YouTube
+    const youtubeApiLoadPromise = new Promise<void>((resolve) => {
+      // Função global chamada quando a API do YouTube estiver pronta
+      (window as any)['onYouTubeIframeAPIReady'] = () => {
+        resolve();
+      };
+
+      // Carregue o script do YouTube API
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.body.appendChild(tag);
+    });
+
+    // Aguarde o carregamento da API do YouTube e, em seguida, crie o player
+    youtubeApiLoadPromise.then(() => {
+      console.log('API do YouTube carregada');
+      this.createYouTubePlayer();
+    });
+
+    this.videoSubscription = this.videoImportService.videoUrlChanged.subscribe(
+      (newVideoUrl) => {
+
+        let newVideo = { id: newVideoUrl, favorite: false };
+
+        this.videoIds.push(newVideo);
+      }
+    );
+
+    setInterval(() => {
+      const playerVid = document.querySelector('#player') as HTMLElement;
+
+      this.isMobile = this.checkIfMobile();
+
+      this.isHided ? (() => {
+        playerVid.style.transition = "opacity 0.3s";
+        playerVid.style.opacity = "0";
+
+      })() :  playerVid.style.opacity = "1";
+
+      this.updateProgressBar();
+    }, 100); // Intervalo definido para 100 milissegundos
+
+  }
+
+  createYouTubePlayer() {
+    this.player = new (window as any)['YT'].Player('player', {
+      height: '360',
+      width: '640',
+      videoId: this.videoIds[this.currentIndex].id,
+      events: {
+        'onReady': () => {
+          // Player está pronto
+          //this.player.playVideo(); // Começa a reprodução quando estiver pronto
+          this.refresh()
+        },
+        'onStateChange': (event: { data: any; }) => {
+          // Monitora as alterações de estado de reprodução
+          if (event.data === (window as any)['YT'].PlayerState.PLAYING) {
+            this.isPaused = true; // Define como true quando está tocando
+          } else {
+            this.isPaused = false; // Define como false quando não está tocando
+          }
+
+          if (event.data === (window as any)['YT'].PlayerState.ENDED) {
+            // Chamada à função quando o vídeo termina
+            this.skipSong();
+          }
+
+          this.updateProgressBar();
+        }
+      }
+    });
+    this.history.push(this.videoIds[this.currentIndex].id);
+  }
+
+  pauseVideo() {
+
+    if (this.player && typeof this.player.pauseVideo === 'function') {
+      this.player.pauseVideo(); // Chama a função de pausar do player
+    }
+    if (this.isPaused == false) {
+      this.player.playVideo();
+      this.isPaused = true;
+    }
+  }
+
+  skipSong() {
+    this.refresh()
+
+    if (this.player) {
+      // Avance para o próximo vídeo no array
+      this.currentIndex = (this.currentIndex + 1) % this.videoIds.length;
+      this.history.push(this.videoIds[this.currentIndex].id);
+
+      // Atualize o vídeo atual no player
+      this.player.loadVideoById(this.videoIds[this.currentIndex].id);
+      // Inicie a reprodução se o vídeo estiver pausado
+      if (!this.isPaused) {
+        this.player.playVideo();
+        this.isPaused = true;
+      }
+    }
+  }
+
+  // Função para voltar ao vídeo anterior no array
+  previousVideo() {
+    this.refresh()
+    if (this.player) {
+      // Verifique se há um vídeo anterior no array
+
+        // Retroceda para o vídeo anterior
+        this.currentIndex--;
+
+        // Atualize o vídeo atual no player
+        //if (this.currentIndex <= 0){
+        //  this.player.loadVideoById(this.videoIds.at(this.currentIndex));
+        //} else {
+        this.player.loadVideoById(this.videoIds[this.currentIndex].id);
+        //}
+        // Inicie a reprodução se o vídeo estiver pausado
+        if (!this.isPaused) {
+          this.player.playVideo();
+          this.isPaused = true;
+        }
+
+
+    }
+  }
+
+  // Função para atualizar a barra de reprodução
+  updateProgressBar() {
+    if (this.player && this.isPaused) {
+      const currentTime = this.player.getCurrentTime();
+      const duration = this.player.getDuration();
+
+      // Atualize a largura da barra de progresso
+      const progressBar = document.querySelector('.progress') as HTMLElement;
+      const progressPercentage = (currentTime / duration) * 100;
+      progressBar.style.width = progressPercentage + '%';
+
+      // Atualize a exibição da duração formatada
+      this.videoCurrentTime = this.formatTime(currentTime);
+      this.videoDuration = this.formatTime(duration);
+    }
+  }
+
+  // Função para formatar o tempo em minutos e segundos
+  formatTime(time: number): string {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    this.refresh()
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  }
+
+  // Função para buscar uma posição específica no vídeo com base no clique na barra de progresso
+seekToPosition(event: MouseEvent) {
+  if (this.player) {
+
+    const progress = document.querySelector(".progress") as HTMLElement;
+    const progressBar = event.currentTarget as HTMLElement;
+    const progressBarWidth = progressBar.clientWidth;
+    const clickX = event.clientX - progressBar.getBoundingClientRect().left;
+    const seekToTime = (clickX / progressBarWidth) * this.player.getDuration();
+
+    progress.style.width = (clickX / progressBarWidth) * 100 + '%';
+
+    // Defina a posição do vídeo para o momento correspondente
+    this.player.seekTo(seekToTime, true);
+  }
+}
+
+onVolumeChange(vol: number){
+  if (!this.isMuted){
+    this.player.setVolume(vol);
+  }
+
+}
+
+muted(){
+  var actualVol:number = 50; // Armazena volume atual numa var
+
+  if (this.volume > 0) {
+
+    actualVol = this.volume;
+
+  }
+
+
+  if (!this.isMuted) {
+
+    this.player.setVolume(0);
+    this.isMuted = true;
+
+  } else {
+    this.player.setVolume(actualVol);
+    this.isMuted = false;
+  }
+
+}
+
+
+openModal() {
+  const modalRef = this.modalService.open(ModalComponent, { size: 'lg', backdropClass: 'modal-black' });
+}
+
+favoriteMusic(){
+  console.log(this.isFavorite)
+  this.isFavorite = !this.isFavorite
+  if (!this.videoIds[this.currentIndex].favorite) {
+    this.videoIds[this.currentIndex].favorite = this.isFavorite;
+  } else {
+    this.videoIds[this.currentIndex].favorite = false;
+  }
+}
+
+
+refresh(){
+  try{
+    const videoData = this.player.getVideoData();
+
+    this.videoTitle = videoData.title;
+    this.videoAuthor = videoData.author;
+    this.isFavorite = this.videoIds[this.currentIndex].favorite;
+    this.videoUrl = this.player.getVideoUrl();
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+private checkIfMobile(): boolean {
+  const screenWidth = window.innerWidth;
+  return screenWidth <= 960; // Você pode ajustar esse valor conforme necessário para definir quando considerar que é um dispositivo móvel.
+}
+
+}

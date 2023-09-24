@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@angular/youtube-player": "^16.2.5"
+  }
+}

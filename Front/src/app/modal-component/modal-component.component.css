@@ -1,0 +1,6 @@
+/* Estilo personalizado para o botão de fechar do modal */
+.close-modal-btn {
+  font-size: 24px; /* Tamanho do ícone */
+  color: red; /* Cor do ícone */
+  background-color: rgba(14, 14, 77, 0.712);
+}

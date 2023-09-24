@@ -1,0 +1,129 @@
+<div class="container d-flex justify-content-center p-3 position-relative">
+  <div id="player"></div>
+  <img
+    src="assets/vynil.png"
+    alt="Vynil"
+    class="img-fluid img-vynil"
+  />
+</div>
+
+
+<!--
+<youtube-player
+  videoId="dQw4w9WgXcQ"
+  suggestedQuality="default"
+  [height]="600"
+  [width]="1080"
+  [startSeconds]="0"
+  [endSeconds]="999">
+</youtube-player>-->
+
+
+<div class="container d-flex justify-content-center text-center">
+  <div class="d-block mb-3">
+    <h3>{{videoTitle}}</h3> <a class="btn" (click)="favoriteMusic()">
+      <box-icon *ngIf="!isFavorite" color="white" type='solid' name='star' ></box-icon>
+      <box-icon *ngIf="isFavorite" color="yellow" type='solid' name='star' ></box-icon>
+    </a>
+    <h4></h4>
+    <h5><a href="{{videoUrl}}" target="_blank">[{{videoAuthor}}]</a></h5>
+  </div>
+
+</div>
+
+<div class="container audio-progress">
+
+  <div class="progress-bar rounded bar" (click)="seekToPosition($event)">
+    <div class="progress"></div>
+  </div>
+
+  <div class="row text-center">
+
+    <div class="col">
+      <p class="">{{ videoCurrentTime }}</p>
+    </div>
+
+    <div class="col-xl-10" *ngIf="!isMobile">
+
+    </div>
+
+    <div class="col" >
+      <p class="">{{ videoDuration }}</p>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="container d-flex justify-content-center w-50">
+  <div class="audio-btns d-flex flex-column ">
+
+
+      <div class="audio-btns p-2 flex-grow-1">
+
+        <button (click)="previousVideo()" class="btn skip-back">
+          <box-icon color="white" type='solid' name='left-arrow'></box-icon>
+        </button>
+
+        <button (click)="pauseVideo()" class="btn play" *ngIf="!isPaused">
+          <box-icon size="md" color="white" name="play" *ngIf="!isPaused"></box-icon>
+        </button>
+
+        <button (click)="pauseVideo()" class="btn play" *ngIf="isPaused">
+          <box-icon size="md" color="white" name="pause" *ngIf="isPaused"></box-icon>
+        </button>
+
+        <button (click)="skipSong()" class="btn skip-forward">
+          <box-icon color="white" type='solid' name='right-arrow'></box-icon>
+        </button>
+
+      </div>
+
+      <div class="audio-btns p-2 flex-grow-1">
+
+
+        <button (click)="isHided=!isHided" *ngIf="isHided" class="btn hide">
+          <box-icon color="white" type='solid' name='ghost'></box-icon>
+        </button>
+
+        <button (click)="isHided=!isHided" *ngIf="!isHided" class="btn hide">
+          <box-icon color="white" name='ghost'></box-icon>
+        </button>
+
+        <button (click)="openModal()" class="btn">
+          <box-icon color="white" type='solid' name='down-arrow-circle'></box-icon>
+        </button>
+
+      </div>
+  </div>
+</div>
+
+<!--
+<br>
+<h3>{{history | json}}</h3>
+<br>
+{{player | json}}
+-->
+
+<div class="container d-flex justify-content-center w-50">
+ <div class="d-flex">
+        <a (click)="muted()" class="" >
+          <box-icon color="white" *ngIf="isMuted" name='volume-mute'></box-icon>
+          <box-icon color="white" *ngIf="volume==0 && !isMuted"name='volume'></box-icon>
+          <box-icon color="white" *ngIf="volume<=50 && volume  > 0 && !isMuted"name='volume-low'></box-icon>
+          <box-icon color="white" *ngIf="volume>50 && !isMuted"name='volume-full'></box-icon>
+        </a>
+
+
+        <label for="customRange1" class="form-label inv-border">
+            <input type="range"
+            class="form-range mx-0 "
+            min="0" max="100"
+            [(ngModel)]="volume"
+            (input)="onVolumeChange(volume)">
+        </label>
+
+
+        <p class="cabo">{{volume}}%</p>
+    </div>
+</div>
