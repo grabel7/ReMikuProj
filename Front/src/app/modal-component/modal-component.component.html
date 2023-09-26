@@ -15,6 +15,13 @@
         Please provide a valid Youtube URL.
       </div>
     </div>
+    <p>Favorite?</p>
+    <div class="custom-control custom-radio custom-control-inline">
+      <input [(ngModel)]="favorite" [value]="true" type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
+      <label class="custom-control-label" for="customRadioInline1">Yes</label>
+      <input [(ngModel)]="favorite" [value]="false"type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
+      <label class="custom-control-label" for="customRadioInline2">No</label>
+    </div>
 
     <div *ngIf="videoId">
       <p>ID do Vídeo: {{ videoId }}</p>

@@ -5,9 +5,7 @@ import { Subscription } from 'rxjs';
 
 //Services
 import { VideoImportService } from '../video-import.service';
-
-
-
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-music-player',
@@ -15,17 +13,23 @@ import { VideoImportService } from '../video-import.service';
   styleUrls: ['./music-player.component.scss']
 })
 export class MusicPlayerComponent implements OnInit {
-  videoIds: Array<{ id: string, favorite: boolean }> = [
-    { id: 'dQw4w9WgXcQ', favorite: false },
-    { id: 'AQcOdxEmfEg', favorite: false },
-    { id: 'rudkEqI8aIU', favorite: false }
+
+  videoIds: any = [
+
   ];
-  history: string[] = []
+
+  playlistFavorite: any = [{
+    videoId: '',
+favorite: false}
+];
+
+
 
   isPaused: boolean = false;
   isHided: boolean = true;
   isMobile: boolean = false;
   isMuted: boolean = false;
+  isCollapsed: boolean = true;
 
   videoCurrentTime: string = '0:00';
   videoDuration: string = '0:00';
@@ -37,16 +41,21 @@ export class MusicPlayerComponent implements OnInit {
   volume: number = 50;
   currentIndex: number = 0;
 
-  player: any;
-  historyId: any = '';
+  isFavorited: boolean = false;
 
-  isFavorite: boolean = this.videoIds[this.currentIndex].favorite;
+  player: any;
+
+  /* this.videoIds[this.currentIndex].favorite; //Estudar async */
+  //isFavorite: boolean = ;
 
 
   private videoSubscription: Subscription  | null = null; // Inicialize com null
 
 
-  constructor(private modalService: NgbModal, private videoImportService: VideoImportService) {}
+  constructor(private modalService: NgbModal,
+              private videoImportService: VideoImportService,
+              private http: HttpClient,
+              ) {}
 
   //progressPercentage: number = 50; // Por exemplo, 50% de progresso
 
@@ -70,20 +79,27 @@ export class MusicPlayerComponent implements OnInit {
       document.body.appendChild(tag);
     });
 
+
     // Aguarde o carregamento da API do YouTube e, em seguida, crie o player
     youtubeApiLoadPromise.then(() => {
       console.log('API do YouTube carregada');
       this.createYouTubePlayer();
+
     });
 
-    this.videoSubscription = this.videoImportService.videoUrlChanged.subscribe(
-      (newVideoUrl) => {
+    this.videoImportService.callFunc.subscribe(() => {
+      this.httpTest(); // Reload the GET function after a POST
+    });
 
-        let newVideo = { id: newVideoUrl, favorite: false };
+    //this.videoSubscription = this.videoImportService.videoUrlChanged.subscribe(
+      //(newVideoUrl) => {
 
-        this.videoIds.push(newVideo);
-      }
-    );
+       // let newVideo = { id: newVideoUrl, favorite: false };
+
+        //this.videoIds.push(newVideo);
+      //}
+    //);
+    this.httpTest()
 
     setInterval(() => {
       const playerVid = document.querySelector('#player') as HTMLElement;
@@ -97,7 +113,7 @@ export class MusicPlayerComponent implements OnInit {
       })() :  playerVid.style.opacity = "1";
 
       this.updateProgressBar();
-    }, 100); // Intervalo definido para 100 milissegundos
+    }, 100); // Intervalo definido para 100
 
   }
 
@@ -105,7 +121,9 @@ export class MusicPlayerComponent implements OnInit {
     this.player = new (window as any)['YT'].Player('player', {
       height: '360',
       width: '640',
-      videoId: this.videoIds[this.currentIndex].id,
+      //videoId: this.playlistFavorite[this.currentIndex].videoId,
+      //videoId: this.videoIds[this.currentIndex].videoId,
+      videoId: this.videoIds[this.currentIndex].videoId,
       events: {
         'onReady': () => {
           // Player está pronto
@@ -124,12 +142,11 @@ export class MusicPlayerComponent implements OnInit {
             // Chamada à função quando o vídeo termina
             this.skipSong();
           }
-
-          this.updateProgressBar();
         }
       }
     });
-    this.history.push(this.videoIds[this.currentIndex].id);
+    this.checkFavorites();
+
   }
 
   pauseVideo() {
@@ -147,18 +164,19 @@ export class MusicPlayerComponent implements OnInit {
     this.refresh()
 
     if (this.player) {
-      // Avance para o próximo vídeo no array
-      this.currentIndex = (this.currentIndex + 1) % this.videoIds.length;
-      this.history.push(this.videoIds[this.currentIndex].id);
 
-      // Atualize o vídeo atual no player
-      this.player.loadVideoById(this.videoIds[this.currentIndex].id);
-      // Inicie a reprodução se o vídeo estiver pausado
+          this.currentIndex = (this.currentIndex + 1) % this.videoIds.length;
+
+          // Atualize o vídeo atual no player
+          this.player.loadVideoById(this.videoIds[this.currentIndex].videoId);
+
+
       if (!this.isPaused) {
         this.player.playVideo();
         this.isPaused = true;
       }
     }
+
   }
 
   // Função para voltar ao vídeo anterior no array
@@ -168,13 +186,18 @@ export class MusicPlayerComponent implements OnInit {
       // Verifique se há um vídeo anterior no array
 
         // Retroceda para o vídeo anterior
-        this.currentIndex--;
+        if(this.currentIndex > 0){
+          this.currentIndex--;
+        } else {
+          this.currentIndex = this.videoIds.length - 1
+        }
+
 
         // Atualize o vídeo atual no player
         //if (this.currentIndex <= 0){
         //  this.player.loadVideoById(this.videoIds.at(this.currentIndex));
         //} else {
-        this.player.loadVideoById(this.videoIds[this.currentIndex].id);
+        this.player.loadVideoById(this.currentVideo());
         //}
         // Inicie a reprodução se o vídeo estiver pausado
         if (!this.isPaused) {
@@ -260,18 +283,56 @@ muted(){
 
 openModal() {
   const modalRef = this.modalService.open(ModalComponent, { size: 'lg', backdropClass: 'modal-black' });
+
 }
 
 favoriteMusic(){
-  console.log(this.isFavorite)
-  this.isFavorite = !this.isFavorite
-  if (!this.videoIds[this.currentIndex].favorite) {
-    this.videoIds[this.currentIndex].favorite = this.isFavorite;
-  } else {
-    this.videoIds[this.currentIndex].favorite = false;
+  const headers = new HttpHeaders({
+    'Content-Type': 'application/json'
+  });
+
+  const updatedData = {
+    favorite: this.isFavorited
   }
+
+  this.http.put('http://localhost:5098/api/Favorites/ChangeFavorite/' + this.videoIds[this.currentIndex].songId
+  , updatedData
+  , { headers }).subscribe(
+    (response) => {
+      console.log('Atualização bem-sucedida:', response);
+    },
+    (error) => {
+      console.error('Erro na atualização:', error);
+      console.log(updatedData)
+    }
+  );
+
+  this.httpTest()
+  this.checkFavorites();
+  console.log(this.playlistFavorite);
+
 }
 
+public async httpTest(): Promise<void>{
+  try{
+    const musicResponse = await this.http.get('http://localhost:5098/api/Music').toPromise();
+    this.videoIds = musicResponse;
+
+    const favoritesResponse = await this.http.get('http://localhost:5098/api/Favorites/').toPromise();
+    this.playlistFavorite = favoritesResponse;
+    this.checkFavorites();
+
+    console.log(this.videoIds);
+
+  } catch (error) {
+    console.error('Erro ao buscar dados:', error);
+  }
+
+}
+
+onlyFav(){
+
+}
 
 refresh(){
   try{
@@ -279,16 +340,98 @@ refresh(){
 
     this.videoTitle = videoData.title;
     this.videoAuthor = videoData.author;
-    this.isFavorite = this.videoIds[this.currentIndex].favorite;
+
     this.videoUrl = this.player.getVideoUrl();
   } catch (error) {
-    console.error("Error:", error);
+    console.error();
   }
 }
 
 private checkIfMobile(): boolean {
   const screenWidth = window.innerWidth;
   return screenWidth <= 960; // Você pode ajustar esse valor conforme necessário para definir quando considerar que é um dispositivo móvel.
+}
+
+currentVideo(){
+let current;
+/*
+  //console.log(this.isOnlyFav)
+  switch(this.isOnlyFav){
+    case false : {
+      current = this.videoIds[this.currentIndex].videoId;
+      //console.log(this.isOnlyFav);
+      break;
+    }
+    case true : {
+      if (this.playlistFavorite.length > 0) {
+      this.currentIndex = 1;
+      current = this.playlistFavorite[this.currentIndex].videoId;
+      }
+      //console.log(this.isOnlyFav)
+      break;
+    }
+  }
+  return current; */
+
+
+  current = this.videoIds[this.currentIndex].videoId;
+
+  return current;
+
+}
+
+checkFavorites(){
+  this.http.get<any[]>('http://localhost:5098/api/Favorites').subscribe(
+    (favoritesData) => {
+      // Verifique se a música atual está na lista de favoritos da API
+      const currentSongId = this.videoIds[this.currentIndex].songId;
+      this.isFavorited = favoritesData.some(item => item.songId === currentSongId);
+    },
+    error => {
+      console.error('Erro ao verificar favoritos:', error);
+    }
+  );
+}
+
+toggleFavorite() {
+  const currentSongId = this.videoIds[this.currentIndex].songId;
+  const currentVideoId = this.videoIds[this.currentIndex].videoId;
+  if (this.isFavorited) {
+    // Se a música está marcada como favorita, faça uma solicitação para desmarcá-la
+    this.http.put(`http://localhost:5098/api/Music/${currentSongId}`, {
+      songId: currentSongId,
+      videoId: currentVideoId,
+      favorite: false
+    }).subscribe(
+      () => {
+        this.isFavorited = false;
+        console.log('Música removida dos favoritos.');
+      },
+      error => {
+        console.error('Erro ao remover dos favoritos:', error);
+      }
+    );
+  } else {
+    // Se a música não está marcada como favorita, faça uma solicitação para marcá-la
+    this.http.put(`http://localhost:5098/api/Music/${currentSongId}`, {
+      songId: currentSongId,
+      videoId: currentVideoId,
+      favorite: true
+   }).subscribe(
+      () => {
+        this.isFavorited = true;
+        console.log('Música adicionada aos favoritos.');
+      },
+      error => {
+        console.error('Erro ao adicionar aos favoritos:', error);
+      }
+    );
+  }
+}
+
+
+trash(){
+  console.log(this.currentIndex)
 }
 
 }

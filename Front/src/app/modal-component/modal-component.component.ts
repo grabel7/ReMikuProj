@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { VideoImportService } from '../video-import.service';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -12,7 +13,8 @@ import { VideoImportService } from '../video-import.service';
 export class ModalComponent {
   constructor(
     public activeModal: NgbActiveModal,
-    private videoImportService: VideoImportService
+    private videoImportService: VideoImportService,
+    private http: HttpClient
   ) {  }
 
   closeModal() {
@@ -23,6 +25,27 @@ export class ModalComponent {
   historyImport: string[] = [] // Only contains new values
   videoId: string | null = null;
   invalidUrl: boolean = false;
+  favorite: boolean = false;
+  teste: any;
+
+  @Output() callParent = new EventEmitter<any>();
+
+  postData(videoId: string, favorite: boolean) {
+    const url = 'http://localhost:5098/api/Music'; // Substitua pela URL do seu backend
+
+    // Crie o objeto JSON omitindo o campo 'songId'
+    const dataToPost = {
+      videoId: videoId,
+      favorite: this.favorite
+    };
+    this.teste = dataToPost
+
+    console.log(url, dataToPost)
+
+    return this.http.post(url, dataToPost);
+  }
+
+
 
   extractVideoId() {
     const regex = /(?:\?v=|youtu.be\/)([A-Za-z0-9_-]{11})/;
@@ -34,8 +57,15 @@ export class ModalComponent {
 
       if (this.historyImport.indexOf(this.videoId)){
 
-        this.videoImportService.videoUrl = this.videoId;
         this.historyImport.push(this.videoId)
+
+        this.postData(this.videoId, this.favorite).subscribe((response) => {
+          console.log('Resposta do servidor:', response)
+          this.videoImportService.callFunc.emit(); // Reload GET function
+        }, (error) => {
+          console.error('Erro:', error);
+        });
+
       }
 
     } else {

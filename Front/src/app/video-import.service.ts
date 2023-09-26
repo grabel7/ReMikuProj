@@ -5,15 +5,18 @@ import { Injectable, EventEmitter } from '@angular/core';
 })
 export class VideoImportService {
 
-  private _videoUrl: string = '';
-  videoUrlChanged = new EventEmitter<string>();
+  callFunc = new EventEmitter<void>();
 
-  set videoUrl(url: string) {
-    this._videoUrl = url;
-    this.videoUrlChanged.emit(url);
-  }
 
-  get videoUrl() {
-    return this._videoUrl;
-  }
+  //private _videoUrl: string = '';
+  //videoUrlChanged = new EventEmitter<string>();
+
+  //set videoUrl(url: string) {
+  //  this._videoUrl = url;
+  //  this.videoUrlChanged.emit(url);
+  //}
+//
+  //get videoUrl() {
+  //  return this._videoUrl;
+  //}
 }

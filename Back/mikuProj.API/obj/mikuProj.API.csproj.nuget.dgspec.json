@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\Back\\mikuProj.API\\mikuProj.API.csproj": {}
+    "C:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\Back\\mikuProj.API\\mikuProj.API.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\Back\\mikuProj.API\\mikuProj.API.csproj": {
+    "C:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\Back\\mikuProj.API\\mikuProj.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\Back\\mikuProj.API\\mikuProj.API.csproj",
+        "projectUniqueName": "C:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\Back\\mikuProj.API\\mikuProj.API.csproj",
         "projectName": "mikuProj.API",
-        "projectPath": "c:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\Back\\mikuProj.API\\mikuProj.API.csproj",
+        "projectPath": "C:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\Back\\mikuProj.API\\mikuProj.API.csproj",
         "packagesPath": "C:\\Users\\Hippler\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\Back\\mikuProj.API\\obj\\",
+        "outputPath": "C:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\Back\\mikuProj.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -25,6 +25,9 @@
           "net7.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "C:\\Program Files\\dotnet\\sdk\\7.0.306\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -43,6 +46,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Microsoft.AspNet.WebApi": {
+              "target": "Package",
+              "version": "[5.2.9, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[7.0.9, )"
