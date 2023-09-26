@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import {Title} from "@angular/platform-browser";
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from '../modal-component/modal-component.component'; // Importe o componente do Modal
 import { Subscription } from 'rxjs';
 
 //Services
 import { VideoImportService } from '../video-import.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { FavoriteService } from '../Services/UserActionsService';
 
 @Component({
   selector: 'app-music-player',
@@ -55,6 +57,8 @@ favorite: false}
   constructor(private modalService: NgbModal,
               private videoImportService: VideoImportService,
               private http: HttpClient,
+              private favoriteService: FavoriteService,
+              private titleService:Title
               ) {}
 
   //progressPercentage: number = 50; // Por exemplo, 50% de progresso
@@ -128,6 +132,7 @@ favorite: false}
         'onReady': () => {
           // Player está pronto
           //this.player.playVideo(); // Começa a reprodução quando estiver pronto
+          this.checkFavorites();
           this.refresh()
         },
         'onStateChange': (event: { data: any; }) => {
@@ -160,54 +165,62 @@ favorite: false}
     }
   }
 
-  skipSong() {
-    this.refresh()
+  // Função para avançar para a próxima música
+skipSong() {
+  this.refresh();
 
-    if (this.player) {
+  if (this.player) {
+    this.currentIndex = (this.currentIndex + 1) % this.videoIds.length;
 
-          this.currentIndex = (this.currentIndex + 1) % this.videoIds.length;
+    // Atualize o vídeo atual no player
+    this.player.loadVideoById(this.videoIds[this.currentIndex].videoId);
 
-          // Atualize o vídeo atual no player
-          this.player.loadVideoById(this.videoIds[this.currentIndex].videoId);
-
-
-      if (!this.isPaused) {
-        this.player.playVideo();
-        this.isPaused = true;
+    // Atualize o status de favorito com base nos dados da API
+    this.player.addEventListener('onStateChange', (event:any) => {
+      // Verificar se o vídeo está começando a ser reproduzido (estado 1)
+      if (event.data === 1 ) {
+        // Após o início da reprodução, atualize o status de favorito e o indicador visual
+      this.checkFavorites();
       }
-    }
+    });
 
-  }
-
-  // Função para voltar ao vídeo anterior no array
-  previousVideo() {
-    this.refresh()
-    if (this.player) {
-      // Verifique se há um vídeo anterior no array
-
-        // Retroceda para o vídeo anterior
-        if(this.currentIndex > 0){
-          this.currentIndex--;
-        } else {
-          this.currentIndex = this.videoIds.length - 1
-        }
-
-
-        // Atualize o vídeo atual no player
-        //if (this.currentIndex <= 0){
-        //  this.player.loadVideoById(this.videoIds.at(this.currentIndex));
-        //} else {
-        this.player.loadVideoById(this.currentVideo());
-        //}
-        // Inicie a reprodução se o vídeo estiver pausado
-        if (!this.isPaused) {
-          this.player.playVideo();
-          this.isPaused = true;
-        }
-
-
+    if (!this.isPaused) {
+      this.player.playVideo();
+      this.isPaused = true;
     }
   }
+}
+
+// Função para voltar ao vídeo anterior no array
+previousVideo() {
+  this.refresh();
+
+  if (this.player) {
+    // Verifique se há um vídeo anterior no array
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+    } else {
+      this.currentIndex = this.videoIds.length - 1;
+    }
+
+    // Atualize o vídeo atual no player
+    this.player.loadVideoById(this.videoIds[this.currentIndex].videoId);
+
+    this.player.addEventListener('onStateChange', (event:any) => {
+      // Verificar se o vídeo está começando a ser reproduzido (estado 1)
+      if (event.data === 1) {
+        // Após o início da reprodução, atualize o status de favorito e o indicador visual
+      this.checkFavorites();
+      }
+    });
+
+    // Inicie a reprodução se o vídeo estiver pausado
+    if (!this.isPaused) {
+      this.player.playVideo();
+      this.isPaused = true;
+    }
+  }
+}
 
   // Função para atualizar a barra de reprodução
   updateProgressBar() {
@@ -285,34 +298,6 @@ openModal() {
   const modalRef = this.modalService.open(ModalComponent, { size: 'lg', backdropClass: 'modal-black' });
 
 }
-
-favoriteMusic(){
-  const headers = new HttpHeaders({
-    'Content-Type': 'application/json'
-  });
-
-  const updatedData = {
-    favorite: this.isFavorited
-  }
-
-  this.http.put('http://localhost:5098/api/Favorites/ChangeFavorite/' + this.videoIds[this.currentIndex].songId
-  , updatedData
-  , { headers }).subscribe(
-    (response) => {
-      console.log('Atualização bem-sucedida:', response);
-    },
-    (error) => {
-      console.error('Erro na atualização:', error);
-      console.log(updatedData)
-    }
-  );
-
-  this.httpTest()
-  this.checkFavorites();
-  console.log(this.playlistFavorite);
-
-}
-
 public async httpTest(): Promise<void>{
   try{
     const musicResponse = await this.http.get('http://localhost:5098/api/Music').toPromise();
@@ -341,6 +326,7 @@ refresh(){
     this.videoTitle = videoData.title;
     this.videoAuthor = videoData.author;
 
+    this.titleService.setTitle(`${this.videoTitle} - MikuProj`)
     this.videoUrl = this.player.getVideoUrl();
   } catch (error) {
     console.error();
@@ -395,38 +381,16 @@ checkFavorites(){
 
 toggleFavorite() {
   const currentSongId = this.videoIds[this.currentIndex].songId;
-  const currentVideoId = this.videoIds[this.currentIndex].videoId;
-  if (this.isFavorited) {
-    // Se a música está marcada como favorita, faça uma solicitação para desmarcá-la
-    this.http.put(`http://localhost:5098/api/Music/${currentSongId}`, {
-      songId: currentSongId,
-      videoId: currentVideoId,
-      favorite: false
-    }).subscribe(
-      () => {
-        this.isFavorited = false;
-        console.log('Música removida dos favoritos.');
-      },
-      error => {
-        console.error('Erro ao remover dos favoritos:', error);
-      }
-    );
-  } else {
-    // Se a música não está marcada como favorita, faça uma solicitação para marcá-la
-    this.http.put(`http://localhost:5098/api/Music/${currentSongId}`, {
-      songId: currentSongId,
-      videoId: currentVideoId,
-      favorite: true
-   }).subscribe(
-      () => {
-        this.isFavorited = true;
-        console.log('Música adicionada aos favoritos.');
-      },
-      error => {
-        console.error('Erro ao adicionar aos favoritos:', error);
-      }
-    );
-  }
+  const currentvideoId = this.videoIds[this.currentIndex].videoId;
+    const isFavorited = !this.isFavorited;
+
+    // Registra a ação do usuário relacionada a favoritos usando o serviço
+    this.favoriteService.registerFavoriteAction(currentSongId, currentvideoId, isFavorited);
+
+    // Atualiza o estado local do componente
+    this.isFavorited = isFavorited;
+
+    console.log(`Música ${isFavorited ? 'adicionada' : 'removida'} dos favoritos localmente.`);
 }
 
 
