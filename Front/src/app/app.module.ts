@@ -13,6 +13,8 @@ import { MusicPlayerComponent } from './music-player/music-player.component';
 import { HeaderComponent } from './header/header.component';
 import { ModalComponent } from './modal-component/modal-component.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LoadingComponent } from './loading/loading.component';
+import { MusicViewComponent } from './views/music-view/music-view.component';
 
 
 
@@ -21,7 +23,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AppComponent,
     MusicPlayerComponent,
     HeaderComponent,
-    ModalComponent
+    ModalComponent,
+    LoadingComponent,
+    MusicViewComponent
   ],
   imports: [
     NgbModule,

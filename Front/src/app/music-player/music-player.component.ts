@@ -1,31 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import {Title} from "@angular/platform-browser";
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from '../modal-component/modal-component.component'; // Importe o componente do Modal
 import { Subscription } from 'rxjs';
 
 //Services
-import { VideoImportService } from '../video-import.service';
+import { VideoImportService } from '../Services/video-import.service';
 import { HttpClient } from '@angular/common/http';
 import { FavoriteService } from '../Services/UserActionsService';
+
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-music-player',
   templateUrl: './music-player.component.html',
   styleUrls: ['./music-player.component.scss']
 })
-export class MusicPlayerComponent implements OnInit {
+export class MusicPlayerComponent implements OnInit, OnDestroy {
 
-  videoIds: any = [
-
-  ];
+  videoIds: any = [  ];
 
   playlistFavorite: any = [{
-    videoId: '',
-favorite: false}
-];
+      videoId: '',
+      favorite: false}
+    ];
 
-
+  private eventListeners: Function[] = []
 
   isPaused: boolean = false;
   isHided: boolean = true;
@@ -33,11 +33,13 @@ favorite: false}
   isMuted: boolean = false;
   isCollapsed: boolean = true;
 
+  @Output() isLoadingChange = new EventEmitter<boolean>();
+
   videoCurrentTime: string = '0:00';
   videoDuration: string = '0:00';
-  videoTitle: string = '';
-  videoAuthor: string = '';
-  videoUrl: string = '';
+  videoTitle: string | undefined;
+  videoAuthor: string | undefined;
+  videoUrl: string | undefined;
   iconName: string = this.isPaused ? 'play' : 'pause'
 
   volume: number = 50;
@@ -46,6 +48,15 @@ favorite: false}
   isFavorited: boolean = false;
 
   player: any;
+
+  private playerCreated: any;
+  private youtubeApiLoadPromise: Promise<void> | undefined;
+  private youtubeApiLoaded: boolean | undefined;
+  private callFuncSubscription: Subscription | undefined;; // Declare como uma propriedade da classe
+  private intervalId: any;
+  private srcCreated: boolean | undefined;
+
+
 
   /* this.videoIds[this.currentIndex].favorite; //Estudar async */
   //isFavorite: boolean = ;
@@ -58,7 +69,8 @@ favorite: false}
               private videoImportService: VideoImportService,
               private http: HttpClient,
               private favoriteService: FavoriteService,
-              private titleService:Title
+              private titleService:Title,
+              private router: Router
               ) {}
 
   //progressPercentage: number = 50; // Por exemplo, 50% de progresso
@@ -67,45 +79,22 @@ favorite: false}
     //return `${this.progressPercentage}%`;
   //}
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.loadYouTubeApi(); // Aguarda o carregamento da API do YouTube
+
+    this.isLoadingChange.emit(true);
 
     this.isMobile = this.checkIfMobile();
-    // Crie uma promessa para aguardar o carregamento da API do YouTube
-    const youtubeApiLoadPromise = new Promise<void>((resolve) => {
-      // Função global chamada quando a API do YouTube estiver pronta
-      (window as any)['onYouTubeIframeAPIReady'] = () => {
-        resolve();
-      };
 
-      // Carregue o script do YouTube API
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      document.body.appendChild(tag);
-    });
-
-
-    // Aguarde o carregamento da API do YouTube e, em seguida, crie o player
-    youtubeApiLoadPromise.then(() => {
-      console.log('API do YouTube carregada');
-      this.createYouTubePlayer();
-
-    });
-
-    this.videoImportService.callFunc.subscribe(() => {
+    this.callFuncSubscription = this.videoImportService.callFunc.subscribe(() => {
       this.httpTest(); // Reload the GET function after a POST
     });
 
-    //this.videoSubscription = this.videoImportService.videoUrlChanged.subscribe(
-      //(newVideoUrl) => {
+    await this.httpTest(); // Aguarda a conclusão do carregamento
 
-       // let newVideo = { id: newVideoUrl, favorite: false };
 
-        //this.videoIds.push(newVideo);
-      //}
-    //);
-    this.httpTest()
 
-    setInterval(() => {
+    this.intervalId = setInterval(() => {
       const playerVid = document.querySelector('#player') as HTMLElement;
 
       this.isMobile = this.checkIfMobile();
@@ -113,46 +102,45 @@ favorite: false}
       this.isHided ? (() => {
         playerVid.style.transition = "opacity 0.3s";
         playerVid.style.opacity = "0";
-
       })() :  playerVid.style.opacity = "1";
 
       this.updateProgressBar();
     }, 100); // Intervalo definido para 100
 
-  }
-
-  createYouTubePlayer() {
-    this.player = new (window as any)['YT'].Player('player', {
-      height: '360',
-      width: '640',
-      //videoId: this.playlistFavorite[this.currentIndex].videoId,
-      //videoId: this.videoIds[this.currentIndex].videoId,
-      videoId: this.videoIds[this.currentIndex].videoId,
-      events: {
-        'onReady': () => {
-          // Player está pronto
-          //this.player.playVideo(); // Começa a reprodução quando estiver pronto
-          this.checkFavorites();
-          this.refresh()
-        },
-        'onStateChange': (event: { data: any; }) => {
-          // Monitora as alterações de estado de reprodução
-          if (event.data === (window as any)['YT'].PlayerState.PLAYING) {
-            this.isPaused = true; // Define como true quando está tocando
-          } else {
-            this.isPaused = false; // Define como false quando não está tocando
-          }
-
-          if (event.data === (window as any)['YT'].PlayerState.ENDED) {
-            // Chamada à função quando o vídeo termina
-            this.skipSong();
-          }
-        }
-      }
-    });
-    this.checkFavorites();
+    // Após a conclusão de todas as operações assíncronas, você pode definir isLoadingChange como false
+    this.createYouTubePlayer();
 
   }
+
+  ngOnDestroy(): void {
+    this.isLoadingChange.emit(false);
+    console.log('ngOnDestroy!')
+    this.destroyYouTubePlayer();
+
+    if (this.callFuncSubscription) {
+      this.callFuncSubscription.unsubscribe();
+    }
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+  }
+
+  loadYouTubeApi() {
+    const existingScript = document.querySelector('script[src="https://www.youtube.com/iframe_api"]');
+
+    if (!existingScript){
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.body.appendChild(tag);
+    }
+
+     (window as any)['onYouTubeIframeAPIReady'] = () => {
+      // Execute a lógica necessária quando a API do YouTube estiver pronta
+      this.createYouTubePlayer();
+    };
+
+  }
+
 
   pauseVideo() {
 
@@ -183,11 +171,11 @@ skipSong() {
       this.checkFavorites();
       }
     });
-
+/*
     if (!this.isPaused) {
       this.player.playVideo();
       this.isPaused = true;
-    }
+    } */
   }
 }
 
@@ -215,11 +203,45 @@ previousVideo() {
     });
 
     // Inicie a reprodução se o vídeo estiver pausado
-    if (!this.isPaused) {
+/*     if (!this.isPaused) {
       this.player.playVideo();
       this.isPaused = true;
-    }
+    } */
   }
+}
+
+public async createYouTubePlayer() {
+
+  this.playerCreated = true;
+
+  await this.destroyYouTubePlayer();
+  this.player = new (window as any)['YT'].Player('player', {
+    height: '360',
+    width: '640',
+    videoId: this.videoIds[this.currentIndex].videoId,
+    events: {
+      'onReady': () => {
+        //this.player.playVideo(); // Começa a reprodução quando estiver pronto
+        this.checkFavorites();
+        this.refresh();
+        this.isLoadingChange.emit(false);
+      },
+      'onStateChange': (event: { data: any; }) => {
+        // Monitora as alterações de estado de reprodução
+        if (event.data === (window as any)['YT'].PlayerState.PLAYING) {
+          this.isPaused = true; // Define como true quando está tocando
+        } else {
+          this.isPaused = false; // Define como false quando não está tocando
+        }
+
+        if (event.data === (window as any)['YT'].PlayerState.ENDED) {
+          // Chamada à função quando o vídeo termina
+          this.skipSong();
+        }
+      }
+    }
+  });
+
 }
 
   // Função para atualizar a barra de reprodução
@@ -326,8 +348,11 @@ refresh(){
     this.videoTitle = videoData.title;
     this.videoAuthor = videoData.author;
 
+
+
     this.titleService.setTitle(`${this.videoTitle} - MikuProj`)
     this.videoUrl = this.player.getVideoUrl();
+
   } catch (error) {
     console.error();
   }
@@ -335,36 +360,9 @@ refresh(){
 
 private checkIfMobile(): boolean {
   const screenWidth = window.innerWidth;
-  return screenWidth <= 960; // Você pode ajustar esse valor conforme necessário para definir quando considerar que é um dispositivo móvel.
+  return screenWidth <= 1060; // Você pode ajustar esse valor conforme necessário para definir quando considerar que é um dispositivo móvel.
 }
 
-currentVideo(){
-let current;
-/*
-  //console.log(this.isOnlyFav)
-  switch(this.isOnlyFav){
-    case false : {
-      current = this.videoIds[this.currentIndex].videoId;
-      //console.log(this.isOnlyFav);
-      break;
-    }
-    case true : {
-      if (this.playlistFavorite.length > 0) {
-      this.currentIndex = 1;
-      current = this.playlistFavorite[this.currentIndex].videoId;
-      }
-      //console.log(this.isOnlyFav)
-      break;
-    }
-  }
-  return current; */
-
-
-  current = this.videoIds[this.currentIndex].videoId;
-
-  return current;
-
-}
 
 checkFavorites(){
   this.http.get<any[]>('http://localhost:5098/api/Favorites').subscribe(
@@ -382,7 +380,7 @@ checkFavorites(){
 toggleFavorite() {
   const currentSongId = this.videoIds[this.currentIndex].songId;
   const currentvideoId = this.videoIds[this.currentIndex].videoId;
-    const isFavorited = !this.isFavorited;
+  const isFavorited = !this.isFavorited;
 
     // Registra a ação do usuário relacionada a favoritos usando o serviço
     this.favoriteService.registerFavoriteAction(currentSongId, currentvideoId, isFavorited);
@@ -395,7 +393,17 @@ toggleFavorite() {
 
 
 trash(){
-  console.log(this.currentIndex)
+
+}
+
+destroyYouTubePlayer() {
+  if (this.player) {
+    this.player.destroy();
+    this.playerCreated = false;
+    this.player = null; // Defina o player como null para indicar que não está mais em uso
+    console.log('Player destruído.')
+
+  }
 }
 
 }

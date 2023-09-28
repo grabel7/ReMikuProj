@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { VideoImportService } from '../video-import.service';
+import { VideoImportService } from '../Services/video-import.service';
 import { HttpClient } from '@angular/common/http';
 
 

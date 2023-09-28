@@ -1,3 +1,4 @@
+
 <div class="container d-flex justify-content-center p-3 position-relative">
   <div id="player"></div>
   <img
@@ -96,17 +97,17 @@
         <div class="collapse navbar-collapse" [collapse]=isCollapsed [isAnimated]=true id="navbarNav">
 
 
-              <a class="btn" (click)="openModal()" aria-current="page" href="#">
+              <a class="btn" (click)="openModal()" aria-current="page">
                 <box-icon color="white" type='solid' name='down-arrow-circle'></box-icon>
               </a>
 
 
-              <a class="btn" (click)="trash()" href="#">
+              <a class="btn" (click)="trash()">
                 <box-icon color="white" type='solid' name='trash'></box-icon>
               </a>
 
 
-              <a class="btn" href="#">
+              <a class="btn" href="" (click)="httpTest()">
                 <box-icon color="white" name='reset' ></box-icon>
               </a>
 
@@ -128,7 +129,9 @@
 </div>
 
 
+
 <br>
+<button (click)="createYouTubePlayer()">cria</button><button (click)="destroyYouTubePlayer()">quebra</button> <button (click)="this.isLoadingChange.emit(false);">vsffff</button>
 <h3>{{playlistFavorite | json}}</h3>
 <br>
 {{player | json}}

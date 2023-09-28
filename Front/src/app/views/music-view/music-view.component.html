@@ -1,0 +1,4 @@
+<app-loading *ngIf="isLoadingFromParent"></app-loading>
+<app-music-player [(isLoading)]="isLoadingFromParent"></app-music-player>
+
+<router-outlet></router-outlet>
