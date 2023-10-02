@@ -7,7 +7,7 @@ using mikuProj.API.Data;
 
 #nullable disable
 
-namespace mikuProj.API.Migrations
+namespace mikuProj.API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
     partial class DataContextModelSnapshot : ModelSnapshot
@@ -23,11 +23,35 @@ namespace mikuProj.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Channel")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ChannelId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
                     b.Property<bool?>("Favorite")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Language")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UserUploaded")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("VideoId")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("VideoName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("VideoUploaded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Views")
                         .HasColumnType("TEXT");
 
                     b.HasKey("SongId");

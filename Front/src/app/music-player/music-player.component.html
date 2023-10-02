@@ -1,11 +1,14 @@
 
 <div class="container d-flex justify-content-center p-3 position-relative">
   <div id="player"></div>
-  <img
+  <div class="img-vynil">
+    <img
     src="assets/vynil.png"
     alt="Vynil"
-    class="img-fluid img-vynil"
+    class="img-fluid vinyl-stop vinyl-rotating" [ngClass]="{'vinyl-paused': !isPaused}"
   />
+  </div>
+
 </div>
 
 
@@ -27,7 +30,29 @@
       <box-icon *ngIf="isFavorited" color="yellow" type='solid' name='star' ></box-icon>
     </a>
     <h4></h4>
-    <h5><a href="{{videoUrl}}" *ngIf='videoAuthor' target="_blank">[{{videoAuthor}}]</a></h5>
+    <h5><a href="{{'https://www.youtube.com/channel/' + videoChannelId}}" *ngIf='videoAuthor' target="_blank">[{{videoAuthor}}]</a></h5>
+    <button type="button" class="btn btn-sm" (click)="isCollapsedInfo = !isCollapsedInfo"
+        [attr.aria-expanded]="!isCollapsedInfo" aria-controls="collapseBasic"><box-icon color="white" name='expand-vertical'></box-icon>
+</button>
+<div id="collapseBasic" [collapse]="isCollapsedInfo" [isAnimated]="true">
+  <div class="well well-lg card card-block card-header">
+    <!-- Colapse para descrição longa -->
+    <div *ngIf="videoDescription && videoDescription.length > 200" (click)="longDescriptionCollapsed = !longDescriptionCollapsed">
+      <pre *ngIf="longDescriptionCollapsed"><b>Description:</b> {{ videoDescription.slice(0, 200) }}...</pre>
+      <pre *ngIf="!longDescriptionCollapsed"><b>Description:</b> {{ videoDescription }}</pre>
+    </div>
+    <!-- Verifica o comprimento da descrição -->
+    <ng-container *ngIf="videoDescription && videoDescription.length > 200">
+<!--       <button type="button" class="btn btn-link" (click)="longDescriptionCollapsed = !longDescriptionCollapsed">
+        {{ longDescriptionCollapsed ? 'Show More' : 'Show Less' }}
+      </button> -->
+    </ng-container>
+    <p *ngIf="videoLanguage"><b>Language:</b> {{videoLanguage}}</p>
+    <p *ngIf="formattedViews"><b>Views:</b> {{formattedViews}}</p>
+    <p *ngIf="formattedDate"><b>Uploaded:</b> {{formattedDate}}</p>
+
+  </div>
+</div>
   </div>
 
 </div>
@@ -102,7 +127,7 @@
               </a>
 
 
-              <a class="btn" (click)="trash()">
+              <a class="btn" (click)="openTrash()">
                 <box-icon color="white" type='solid' name='trash'></box-icon>
               </a>
 
@@ -120,8 +145,8 @@
 
 
         <button (click)="onlyFav()" class="btn">
-          <box-icon color="white" type='solid' name='star'></box-icon>
-          <!--<box-icon color="yellow" type='solid' *ngIf="" name='star'></box-icon>-->
+          <box-icon color="white" type='solid' *ngIf="!isOnlyFav" name='star'></box-icon>
+          <box-icon color="yellow" type='solid' *ngIf="isOnlyFav" name='star'></box-icon>
         </button>
 
       </div>
@@ -130,11 +155,11 @@
 
 
 
-<br>
+<!-- <br>
 <button (click)="createYouTubePlayer()">cria</button><button (click)="destroyYouTubePlayer()">quebra</button> <button (click)="this.isLoadingChange.emit(false);">vsffff</button>
 <h3>{{playlistFavorite | json}}</h3>
 <br>
-{{player | json}}
+{{player | json}} -->
 
 
 <div class="container d-flex justify-content-center w-50">

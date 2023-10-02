@@ -1,7 +1,9 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { DatePipe } from '@angular/common';
+
 import {Title} from "@angular/platform-browser";
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalComponent } from '../modal-component/modal-component.component'; // Importe o componente do Modal
+import { ModalComponent } from '../modal-screens/modal-component/modal-component.component'; // Importe o componente do Modal
 import { Subscription } from 'rxjs';
 
 //Services
@@ -10,6 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { FavoriteService } from '../Services/UserActionsService';
 
 import { Router, NavigationEnd } from '@angular/router';
+import { EraseComponent } from '../modal-screens/erase/erase.component';
 
 @Component({
   selector: 'app-music-player',
@@ -31,7 +34,11 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   isHided: boolean = true;
   isMobile: boolean = false;
   isMuted: boolean = false;
+
+  //Collapse
   isCollapsed: boolean = true;
+  isCollapsedInfo: boolean = true;
+  longDescriptionCollapsed: boolean = true;
 
   @Output() isLoadingChange = new EventEmitter<boolean>();
 
@@ -42,10 +49,22 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   videoUrl: string | undefined;
   iconName: string = this.isPaused ? 'play' : 'pause'
 
+  //API
+  videoDescription: string | undefined;
+  videoChannelId: string | undefined;
+  videoViews: string = '';
+  videoLanguage: string | undefined;
+  videoUploadDate: string| null = null;
+  videoUserUpload: string | undefined;
+
+  formattedDate: string = '';
+  formattedViews: string = '';
+
   volume: number = 50;
   currentIndex: number = 0;
 
   isFavorited: boolean = false;
+  isOnlyFav:boolean = false;
 
   player: any;
 
@@ -70,7 +89,8 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
               private http: HttpClient,
               private favoriteService: FavoriteService,
               private titleService:Title,
-              private router: Router
+              private router: Router,
+              private datePipe: DatePipe
               ) {}
 
   //progressPercentage: number = 50; // Por exemplo, 50% de progresso
@@ -112,9 +132,35 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
 
   }
 
+/*   ngOnChanges(changes: SimpleChanges): void {
+    // Este método é chamado sempre que a originalDate muda
+    if (changes['videoUploadDate'] && this.videoUploadDate) {
+      // Use o DatePipe para formatar a nova data
+      this.formattedDate = this.datePipe.transform(new Date(this.videoUploadDate), 'short') || '';
+      console.log(this.formattedDate);
+    }
+  } */
+
+  ngDoCheck(): void {
+    const newDate = this.videoIds[this.currentIndex]?.videoUploaded;
+    if (newDate !== this.videoUploadDate) {
+      // A data mudou, formate-a
+      this.videoUploadDate = newDate;
+      this.formatDate();
+    }
+  }
+
+  private formatDate(): void {
+    if (this.videoUploadDate) {
+      // Use o DatePipe para formatar a data
+      this.formattedDate = this.datePipe.transform(new Date(this.videoUploadDate), 'short') || '';
+    } else {
+      this.formattedDate = '';
+    }
+  }
+
   ngOnDestroy(): void {
     this.isLoadingChange.emit(false);
-    console.log('ngOnDestroy!')
     this.destroyYouTubePlayer();
 
     if (this.callFuncSubscription) {
@@ -322,14 +368,20 @@ openModal() {
 }
 public async httpTest(): Promise<void>{
   try{
-    const musicResponse = await this.http.get('http://localhost:5098/api/Music').toPromise();
-    this.videoIds = musicResponse;
+    if (!this.isOnlyFav && this.playlistFavorite)
+    {
+      this.currentIndex = 0;
+      const musicResponse = await this.http.get('http://localhost:5098/api/Music').toPromise();
+      this.videoIds = musicResponse;
+    } else {
+      this.currentIndex = 0;
+      const musicResponse = await this.http.get('http://localhost:5098/playlist/favorites').toPromise();
+      this.videoIds = musicResponse;
+    }
 
     const favoritesResponse = await this.http.get('http://localhost:5098/api/Favorites/').toPromise();
     this.playlistFavorite = favoritesResponse;
     this.checkFavorites();
-
-    console.log(this.videoIds);
 
   } catch (error) {
     console.error('Erro ao buscar dados:', error);
@@ -337,7 +389,11 @@ public async httpTest(): Promise<void>{
 
 }
 
-onlyFav(){
+async onlyFav(){
+  this.isOnlyFav = !this.isOnlyFav
+
+  await this.httpTest();
+  this.skipSong();
 
 }
 
@@ -348,7 +404,17 @@ refresh(){
     this.videoTitle = videoData.title;
     this.videoAuthor = videoData.author;
 
+    this.videoDescription = this.videoIds[this.currentIndex].description;
 
+    this.videoChannelId = this.videoIds[this.currentIndex].channelId;
+    this.videoLanguage = this.videoIds[this.currentIndex].language;
+    this.videoViews = this.videoIds[this.currentIndex].views;
+    this.videoUploadDate = this.videoIds[this.currentIndex].videoUploaded;
+
+    const viewsNumber = parseInt(this.videoViews, 10);
+
+    // Formata o número com divisões de milhares
+    this.formattedViews = viewsNumber.toLocaleString();
 
     this.titleService.setTitle(`${this.videoTitle} - MikuProj`)
     this.videoUrl = this.player.getVideoUrl();
@@ -392,7 +458,8 @@ toggleFavorite() {
 }
 
 
-trash(){
+openTrash(){
+  const modalRef = this.modalService.open(EraseComponent, { size: 'lg', backdropClass: 'modal-black' });
 
 }
 

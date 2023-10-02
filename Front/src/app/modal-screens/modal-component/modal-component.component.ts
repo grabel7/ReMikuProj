@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { VideoImportService } from '../Services/video-import.service';
+import { VideoImportService } from '../../Services/video-import.service';
 import { HttpClient } from '@angular/common/http';
 
 
@@ -27,6 +27,7 @@ export class ModalComponent {
   invalidUrl: boolean = false;
   favorite: boolean = false;
   teste: any;
+  videoName: string = '';
 
   @Output() callParent = new EventEmitter<any>();
 
@@ -45,9 +46,17 @@ export class ModalComponent {
     return this.http.post(url, dataToPost);
   }
 
+  getVideoName(videoId: string){
+    this.http.get('http://localhost:5098/api/Music/' + videoId + '/name', { responseType: 'text' })
+    .subscribe((response: string) => {
+      this.videoName = response; // Atribui a string diretamente à variável videoName
+      console.log(this.videoName);
+    });
+  }
 
 
-  extractVideoId() {
+
+  async extractVideoId() {
     const regex = /(?:\?v=|youtu.be\/)([A-Za-z0-9_-]{11})/;
     const match = this.videoUrl.match(regex);
 
@@ -60,11 +69,14 @@ export class ModalComponent {
         this.historyImport.push(this.videoId)
 
         this.postData(this.videoId, this.favorite).subscribe((response) => {
-          console.log('Resposta do servidor:', response)
+          console.log('Resposta do servidor:', response);
           this.videoImportService.callFunc.emit(); // Reload GET function
         }, (error) => {
           console.error('Erro:', error);
         });
+
+        this.getVideoName(this.videoId);
+        console.log('passou')
 
       }
 

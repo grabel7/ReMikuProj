@@ -12,6 +12,22 @@ namespace mikuProj.API.Data
 
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         public DbSet<Music> Musics { get; set; }
+        
+        public IEnumerable<Music> Search(string query)
+        {
+            query = query.ToLower();
+            var results = Musics.Where(e => e.VideoName.ToLower().Contains(query) || 
+                                            e.VideoId.ToLower().Contains(query) || 
+                                            e.Channel.ToLower().Contains(query) ).ToList();
+            return results;
+        }
+
+        public IEnumerable<Music> PlaylistFavorites()
+        {
+            var results = Musics.Where(f => f.Favorite.Equals(true));
+
+            return results;
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

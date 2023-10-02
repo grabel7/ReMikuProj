@@ -38,7 +38,6 @@ C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\mikuProj.API.runtimeconfig.json
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\mikuProj.API.dll
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\mikuProj.API.pdb
-C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\Microsoft.AspNetCore.OpenApi.dll
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\Microsoft.OpenApi.dll
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
@@ -88,7 +87,6 @@ C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\runtimes\linux-musl-arm\native\libe_sqlite3.so
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\runtimes\linux-musl-arm64\native\libe_sqlite3.so
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\runtimes\linux-musl-x64\native\libe_sqlite3.so
-C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\runtimes\linux-ppc64le\native\libe_sqlite3.so
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\runtimes\linux-s390x\native\libe_sqlite3.so
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\runtimes\linux-x64\native\libe_sqlite3.so
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\runtimes\linux-x86\native\libe_sqlite3.so
@@ -100,8 +98,10 @@ C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\runtimes\win-arm64\native\e_sqlite3.dll
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\runtimes\win-x86\native\e_sqlite3.dll
-C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\System.Net.Http.Formatting.dll
-C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\System.Web.Http.dll
-C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\System.Web.Http.WebHost.dll
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\Newtonsoft.Json.dll
 C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\Back\mikuProj.API\bin\Debug\net7.0\Newtonsoft.Json.Bson.dll
+C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\back\mikuproj.api\bin\Debug\net7.0\System.Net.Http.Formatting.dll
+C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\back\mikuproj.api\bin\Debug\net7.0\System.Web.Http.dll
+C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\back\mikuproj.api\bin\Debug\net7.0\System.Web.Http.WebHost.dll
+C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\back\mikuproj.api\bin\Debug\net7.0\Microsoft.AspNetCore.OpenApi.dll
+C:\Users\Hippler\Desktop\Estudos\FullStack\este\ReMikuProj\back\mikuproj.api\bin\Debug\net7.0\runtimes\linux-ppc64le\native\libe_sqlite3.so

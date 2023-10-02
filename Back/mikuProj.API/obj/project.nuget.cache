@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ngYc5V5antY3qNRwv7aOY1kAVW6UBj2x2Eqwmjvlq6pS5nZ91nNTvYuT97MHcizfA1vmY0jHKh54n07sdL+kgA==",
+  "dgSpecHash": "HrtnPGqoAQSEgxC23tBCgfyHs/6FYdreeadRSad38ShB9VPLV6zurH/6pjlU7hPqxctxPW83ZdvKP1TyvaVCzQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\Back\\mikuProj.API\\mikuProj.API.csproj",
+  "projectFilePath": "C:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\back\\mikuproj.api\\mikuProj.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Hippler\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Hippler\\.nuget\\packages\\microsoft.aspnet.webapi\\5.2.9\\microsoft.aspnet.webapi.5.2.9.nupkg.sha512",

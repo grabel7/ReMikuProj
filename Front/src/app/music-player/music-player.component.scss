@@ -1,28 +1,41 @@
 
 * {
-
   font-family: 'Fjalla One', sans-serif;
   color: #fafafa;
   text-shadow: 0 0 3px #000000, 0 0 5px #000000;
 }
+
 .img-vynil {
-  max-width: 275px; /* Largura máxima da imagem */
-  max-height: 275px; /* Altura máxima da imagem */
+  max-width: 275px;
+  max-height: 275px;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* Centraliza vertical e horizontalmente */
-
+  transform: translate(-50%, -50%);
+  background-size: cover;
+  border-radius: 50%;
+  transition: transform 0.5s ease;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4); 
 }
 
-@keyframes rotation {
-  from {
+.vinyl-rotating {
+  animation: rotate 7s linear infinite !important;
+  transition: transform 0.5s ease;
+}
+
+.vinyl-paused {
+  animation-play-state: paused !important;
+}
+
+@keyframes rotate {
+  0% {
     transform: rotate(0deg);
   }
-  to {
-    transform: rotate(-359deg);
+  100% {
+    transform: rotate(360deg);
   }
 }
+
 
 .audio-btns {
   width: 200px;
@@ -159,5 +172,4 @@ a {
   justify-content: center;
   box-shadow: 3px 2px 7px 1px rgba(0, 0, 0, 0.24);
 }
-
 

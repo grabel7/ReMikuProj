@@ -7245,11 +7245,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\Back\\mikuProj.API\\mikuProj.API.csproj",
+      "projectUniqueName": "C:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\back\\mikuproj.api\\mikuProj.API.csproj",
       "projectName": "mikuProj.API",
-      "projectPath": "C:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\Back\\mikuProj.API\\mikuProj.API.csproj",
+      "projectPath": "C:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\back\\mikuproj.api\\mikuProj.API.csproj",
       "packagesPath": "C:\\Users\\Hippler\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\Back\\mikuProj.API\\obj\\",
+      "outputPath": "C:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\back\\mikuproj.api\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
