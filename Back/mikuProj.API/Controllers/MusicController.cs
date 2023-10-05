@@ -34,11 +34,18 @@ namespace mikuProj.API.Controllers
                 return NoContent(); // Return 204 (No Content) if there is no content.
             }
 
+                foreach (var music in musics)
+            {
+                music.Playlists = await _context.Playlists
+                    .Where(p => p.Musics.Any(m => m.SongId == music.SongId))
+                    .ToListAsync();
+            }
+
             return Ok(musics); // Return all found with a 200 (OK)
         }
 
         [HttpGet("{id}")]
-         public Music GetById(int id){
+        public Music GetById(int id){
             return _context.Musics.FirstOrDefault(music => music.SongId == id);
          }
 

@@ -18,8 +18,7 @@ export class EraseComponent {
 
   onSearchInput() {
     this.searchService.search(this.searchQuery).subscribe((data: any) => {
-      this.searchResults = data;
-      console.log(this.searchResults)
+    this.searchResults = data;
     });
   }
 

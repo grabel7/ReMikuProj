@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using mikuProj.API.Data;
 
@@ -10,27 +11,14 @@ using mikuProj.API.Data;
 namespace mikuProj.API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231003041457_playlist6")]
+    partial class playlist6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
-
-            modelBuilder.Entity("MusicPlaylist", b =>
-                {
-                    b.Property<int>("MusicsSongId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("PlaylistsPlaylistId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("MusicsSongId", "PlaylistsPlaylistId");
-
-                    b.HasIndex("PlaylistsPlaylistId");
-
-                    b.ToTable("PlaylistMusic", (string)null);
-                });
 
             modelBuilder.Entity("mikuProj.API.Models.Music", b =>
                 {
@@ -53,6 +41,9 @@ namespace mikuProj.API.Data.Migrations
                     b.Property<string>("Language")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("PlaylistId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime?>("UserUploaded")
                         .HasColumnType("TEXT");
 
@@ -70,6 +61,8 @@ namespace mikuProj.API.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("SongId");
+
+                    b.HasIndex("PlaylistId");
 
                     b.ToTable("Musics");
                 });
@@ -89,19 +82,16 @@ namespace mikuProj.API.Data.Migrations
                     b.ToTable("Playlists");
                 });
 
-            modelBuilder.Entity("MusicPlaylist", b =>
+            modelBuilder.Entity("mikuProj.API.Models.Music", b =>
                 {
-                    b.HasOne("mikuProj.API.Models.Music", null)
-                        .WithMany()
-                        .HasForeignKey("MusicsSongId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("mikuProj.API.Models.Playlist", null)
-                        .WithMany()
-                        .HasForeignKey("PlaylistsPlaylistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Musics")
+                        .HasForeignKey("PlaylistId");
+                });
+
+            modelBuilder.Entity("mikuProj.API.Models.Playlist", b =>
+                {
+                    b.Navigation("Musics");
                 });
 #pragma warning restore 612, 618
         }

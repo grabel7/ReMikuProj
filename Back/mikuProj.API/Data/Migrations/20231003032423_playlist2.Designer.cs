@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using mikuProj.API.Data;
 
@@ -10,27 +11,14 @@ using mikuProj.API.Data;
 namespace mikuProj.API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231003032423_playlist2")]
+    partial class playlist2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
-
-            modelBuilder.Entity("MusicPlaylist", b =>
-                {
-                    b.Property<int>("MusicsSongId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("PlaylistsPlaylistId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("MusicsSongId", "PlaylistsPlaylistId");
-
-                    b.HasIndex("PlaylistsPlaylistId");
-
-                    b.ToTable("PlaylistMusic", (string)null);
-                });
 
             modelBuilder.Entity("mikuProj.API.Models.Music", b =>
                 {
@@ -80,7 +68,7 @@ namespace mikuProj.API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -89,19 +77,44 @@ namespace mikuProj.API.Data.Migrations
                     b.ToTable("Playlists");
                 });
 
-            modelBuilder.Entity("MusicPlaylist", b =>
+            modelBuilder.Entity("mikuProj.API.Models.PlaylistMusic", b =>
                 {
-                    b.HasOne("mikuProj.API.Models.Music", null)
-                        .WithMany()
-                        .HasForeignKey("MusicsSongId")
+                    b.Property<int>("PlaylistId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SongId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("PlaylistId", "SongId");
+
+                    b.HasIndex("SongId");
+
+                    b.ToTable("PlaylistMusic");
+                });
+
+            modelBuilder.Entity("mikuProj.API.Models.PlaylistMusic", b =>
+                {
+                    b.HasOne("mikuProj.API.Models.Playlist", null)
+                        .WithMany("Musicas")
+                        .HasForeignKey("PlaylistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("mikuProj.API.Models.Playlist", null)
-                        .WithMany()
-                        .HasForeignKey("PlaylistsPlaylistId")
+                    b.HasOne("mikuProj.API.Models.Music", null)
+                        .WithMany("PlaylistMusics")
+                        .HasForeignKey("SongId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("mikuProj.API.Models.Music", b =>
+                {
+                    b.Navigation("PlaylistMusics");
+                });
+
+            modelBuilder.Entity("mikuProj.API.Models.Playlist", b =>
+                {
+                    b.Navigation("Musicas");
                 });
 #pragma warning restore 612, 618
         }

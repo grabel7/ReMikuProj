@@ -1,0 +1,70 @@
+<div class="modal-header close-modal-container">
+
+  <h4 class="modal-title">Playlist Hub</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+
+</div>
+<div class="modal-body ">
+  <!-- Conteúdo do Modal -->
+  <div class="form-row">
+      <h4>Playlists</h4>
+      <div class="container">
+        <div class="row justify-content">
+          <div class="col col-lg-4">
+            <select [(ngModel)]="selected" size="6" class="scrollbox" (change)="optionChange()">
+              <option *ngFor="let pl of playlists" [ngValue]="pl">{{pl.name}}</option>
+            </select>
+
+      <button type="button" class="btn btn-primary btn-sm" (click)="isCollapsed = !isCollapsed" >
+        <box-icon color="white" name='folder-plus' type='solid' ></box-icon>
+      </button>
+      <button type="button" class="btn btn-warning btn-sm" (click)="isCollapseChange = !isCollapseChange">
+        <box-icon color="white" name='rename'></box-icon>
+      </button>
+      <button type="button" class="btn btn-danger btn-sm" (click)="deletePlaylist()">
+        <box-icon color="white" name='trash' type='solid' ></box-icon>
+      </button>
+
+      <div [collapse]=isCollapsed [isAnimated]=true>
+        <input type="text" [(ngModel)]="playName" placeholder="Enter your Playlist Name">
+        <button class="btn btn-primary btn-sm" (click)="createPlaylist()">Ok</button>
+      </div>
+
+      <div [collapse]=isCollapseChange [isAnimated]=true>
+        <input type="text" [(ngModel)]="playName" placeholder="Change Playlist Name">
+        <button class="btn btn-primary btn-sm" (click)="updatePlaylist()">Ok</button>
+      </div>
+          <div class="col col-lg-4">
+            <select [(ngModel)]="selectedMusic" *ngIf="selected" size="6" class="scrollbox" (change)="musicChange()">
+              <option *ngFor="let music of selected.musics" [ngValue]="music">{{music.videoName}}</option>
+            </select>
+
+      <button *ngIf="selected" type="button" class="btn btn-primary btn-sm">
+        <box-icon color="white" name='folder-plus' type='solid'></box-icon>
+      </button>
+      <button *ngIf="selectedMusic" type="button" class="btn btn-danger btn-sm" (click)="deleteSong()">
+        <box-icon color="white" name='trash' type='solid'></box-icon>
+      </button>
+          </div>
+
+        </div>
+      </div>
+
+</div>
+
+<div class="form-row">
+  <div class="col-md-6 mb-3">
+    <input type="text" [(ngModel)]="searchQuery" (input)="onSearchInput()" placeholder="Enter the Music Name">
+
+    <div class="list-group" *ngFor="let result of searchResults">
+
+      <a class="list-group-item list-group-item-action" data-toggle="button" (click)="addMusic(result.songId)">
+        {{ result.videoName }} {{ result.Channel}}
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary">Send</button>
+</div>

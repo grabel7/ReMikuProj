@@ -12,6 +12,7 @@ namespace mikuProj.API.Data
 
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         public DbSet<Music> Musics { get; set; }
+        public DbSet<Playlist> Playlists { get; set; }
         
         public IEnumerable<Music> Search(string query)
         {
@@ -33,6 +34,14 @@ namespace mikuProj.API.Data
     {
         modelBuilder.Entity<Music>()
             .HasKey(m => m.SongId); // Primary Key
+
+        modelBuilder.Entity<Playlist>()
+            .HasKey(pm => pm.PlaylistId);
+
+        modelBuilder.Entity<Music>()
+            .HasMany(m => m.Playlists)
+            .WithMany(p => p.Musics)
+            .UsingEntity(j => j.ToTable("PlaylistMusic")); // Nome da tabela intermediária
     }
     }
 }

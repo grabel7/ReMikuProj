@@ -41,8 +41,6 @@ export class ModalComponent {
     };
     this.teste = dataToPost
 
-    console.log(url, dataToPost)
-
     return this.http.post(url, dataToPost);
   }
 

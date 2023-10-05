@@ -5,24 +5,20 @@
 
 </div>
 <div class="modal-body ">
-  <!-- Conteúdo do Modal -->
+
   <div class="form-row">
     <div class="col-md-6 mb-3">
       <input type="text" [(ngModel)]="searchQuery" (input)="onSearchInput()" placeholder="Enter the Music Name">
-<!--       <ul>
-      <li *ngFor="let result of searchResults">
-        {{ result.videoName }} {{ result.Channel}} <a (click)="deleteResult(result.songId)"></a>
-      </li>
-      </ul> -->
 
       <div class="list-group" *ngFor="let result of searchResults">
-<!--         <a class="list-group-item list-group-item-action active">
-          Cras justo odio
-        </a> -->
+
         <a class="list-group-item list-group-item-action" data-toggle="button" (click)="deleteResult(result.songId)">
           {{ result.videoName }} {{ result.Channel}}
         </a>
       </div>
+    </div>
+  </div>
+
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-primary">Send</button>

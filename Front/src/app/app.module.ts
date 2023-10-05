@@ -17,6 +17,7 @@ import { LoadingComponent } from './loading/loading.component';
 import { MusicViewComponent } from './views/music-view/music-view.component';
 import { DatePipe } from '@angular/common';
 import { EraseComponent } from './modal-screens/erase/erase.component';
+import { PlaylistHubComponent } from './modal-screens/playlist-hub/playlist-hub.component';
 
 
 
@@ -28,7 +29,8 @@ import { EraseComponent } from './modal-screens/erase/erase.component';
     ModalComponent,
     LoadingComponent,
     MusicViewComponent,
-    EraseComponent
+    EraseComponent,
+    PlaylistHubComponent
   ],
   providers: [DatePipe],
   imports: [

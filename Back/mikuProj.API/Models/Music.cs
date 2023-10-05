@@ -24,9 +24,11 @@ public class Music
     public string? Views { get; set; }
     public string? Language { get; set; }
     public bool? Favorite { get; set; }
+
     [DataType(DataType.DateTime)]
     public DateTime? UserUploaded { get; set; }
-}
+    public List<Playlist> Playlists { get; set; } = new List<Playlist>();
+    }
 
 public class FavoriteUpdateDto
 {

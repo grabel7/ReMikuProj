@@ -13,6 +13,7 @@ import { FavoriteService } from '../Services/UserActionsService';
 
 import { Router, NavigationEnd } from '@angular/router';
 import { EraseComponent } from '../modal-screens/erase/erase.component';
+import { PlaylistHubComponent } from '../modal-screens/playlist-hub/playlist-hub.component';
 
 @Component({
   selector: 'app-music-player',
@@ -461,6 +462,10 @@ toggleFavorite() {
 openTrash(){
   const modalRef = this.modalService.open(EraseComponent, { size: 'lg', backdropClass: 'modal-black' });
 
+}
+
+openPlaylistHub(){
+  const modalRef = this.modalService.open(PlaylistHubComponent, { size: 'lg', backdropClass: 'modal-black' });
 }
 
 destroyYouTubePlayer() {
