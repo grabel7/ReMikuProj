@@ -24,6 +24,8 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
 
   videoIds: any = [  ];
 
+  playlist: any = [  ];
+
   playlistFavorite: any = [{
       videoId: '',
       favorite: false}
@@ -40,6 +42,7 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   isCollapsed: boolean = true;
   isCollapsedInfo: boolean = true;
   longDescriptionCollapsed: boolean = true;
+  isPlaylistCollapsed: boolean = true;
 
   @Output() isLoadingChange = new EventEmitter<boolean>();
 
@@ -380,6 +383,9 @@ public async httpTest(): Promise<void>{
       this.videoIds = musicResponse;
     }
 
+    const playlistResponse = await this.http.get('http://localhost:5098/api/Playlist').toPromise();
+    this.playlist = playlistResponse;
+    
     const favoritesResponse = await this.http.get('http://localhost:5098/api/Favorites/').toPromise();
     this.playlistFavorite = favoritesResponse;
     this.checkFavorites();
@@ -391,7 +397,7 @@ public async httpTest(): Promise<void>{
 }
 
 async onlyFav(){
-  this.isOnlyFav = !this.isOnlyFav
+  this.isOnlyFav = !this.isOnlyFav;
 
   await this.httpTest();
   this.skipSong();
@@ -419,15 +425,55 @@ refresh(){
 
     this.titleService.setTitle(`${this.videoTitle} - MikuProj`)
     this.videoUrl = this.player.getVideoUrl();
-
+    this.thumbImg();
   } catch (error) {
     console.error();
   }
+
+/*   const thumb = document.querySelector('#thumb') as HTMLImageElement;
+  let thumbnailUrl = this.videoIds[this.currentIndex].thumbImgUrl;
+  thumb.src = thumbnailUrl;
+  console.log(thumb)
+
+  try{
+    console.log(thumb.src);
+
+    if(this.videoIds.thumbImgUrl){
+      console.log('teste2')
+      thumb.src = this.videoIds.thumbImgUrl
+    } else {
+      thumb.src = "assets/vynil.png"
+    }
+  } catch (error) {
+    console.log('teste3')
+    console.log(error)
+  } */
 }
 
 private checkIfMobile(): boolean {
   const screenWidth = window.innerWidth;
   return screenWidth <= 1060; // Você pode ajustar esse valor conforme necessário para definir quando considerar que é um dispositivo móvel.
+}
+
+async thumbImg(){
+  const thumb = document.querySelector('#thumb') as HTMLImageElement;
+  let thumbnailUrl = this.videoIds[this.currentIndex].thumbImgUrl;
+
+  // Use uma Promessa para aguardar a carga completa da imagem
+  await new Promise<void>((resolve) => {
+    thumb.onload = () => {
+      // Após a carga completa da imagem, resolva a Promessa
+      resolve();
+    };
+    if (thumbnailUrl){
+      thumb.src = thumbnailUrl; // Defina o src da imagem
+      thumb.classList.add("imported")
+    } else {
+      thumb.src = "assets/vynil.png"
+      thumb.classList.remove("imported")
+    }
+  });
+
 }
 
 

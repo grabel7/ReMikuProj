@@ -12,6 +12,7 @@ namespace mikuProj.API.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int PlaylistId { get; set; }
+        public string? PlaylistImg { get; set; } 
         public required string Name { get; set; } 
         public List<Music> Musics { get; set; } = new List<Music>();
     }
@@ -23,14 +24,16 @@ namespace mikuProj.API.Models
     public class PlaylistDto
     {
         public int PlaylistId { get; set; }
-        public string Name { get; set; }
-        public List<MusicDto> Musics { get; set; }
+        public required string Name { get; set; }
+        public string? PlaylistImg { get; set; } 
+        public List<MusicDto>? Musics { get; set; }
     }
 
     public class MusicDto
     {
         public int SongId { get; set; }
         public string? VideoName { get; set; }
+        public string? ThumbImgUrl { get; set; }
         public string? Description { get; set; }
         public DateTime? VideoUploaded { get; set; }
         public required string VideoId { get; set; }

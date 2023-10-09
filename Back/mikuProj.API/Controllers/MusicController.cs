@@ -138,11 +138,13 @@ namespace mikuProj.API.Controllers
                         {
                             var statistics = videoData["items"][0]["statistics"];
                             var snippet = videoData["items"][0]["snippet"];
+                            var thumb = videoData["items"][0]["snippet"]["thumbnails"]["default"];
 
                             newMusic.Views = statistics?["viewCount"]?.ToString();
                             newMusic.Language = snippet?["defaultAudioLanguage"]?.ToString();
                             newMusic.Channel = snippet?["channelTitle"]?.ToString();
                             newMusic.ChannelId = snippet?["channelId"]?.ToString();
+                            newMusic.ThumbImgUrl = thumb?["url"]?.ToString();
                             
                             if (DateTime.TryParse(snippet?["publishedAt"]?.ToString(), out DateTime videoUploaded))
                             {

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 import { SearchServiceService } from 'src/app/Services/search-service.service';
 
 @Component({
@@ -14,8 +15,10 @@ export class PlaylistHubComponent implements OnInit{
   selected: any;
   selectedMusic: any;
   playName: string = '';
+  changeName: string = '';
   isCollapsed: boolean = true;
   isCollapseChange: boolean = true;
+  collapseQuery: boolean = true;
   searchQuery: string = '';
   searchResults: any[] = [];
 
@@ -29,7 +32,8 @@ export class PlaylistHubComponent implements OnInit{
 
   constructor(public activeModal: NgbActiveModal,
               private http: HttpClient,
-              private searchService: SearchServiceService,) { }
+              private searchService: SearchServiceService,
+              private toastrService: ToastrService) { }
 
   closeModal() {
     this.activeModal.close('Modal fechado');
@@ -57,19 +61,21 @@ export class PlaylistHubComponent implements OnInit{
 
     this.http.post(url, dataToPost).subscribe(
       (response) => {
-        this.httpLoad();},
-        (error) => {
-          this.httpLoad();
+        this.httpLoad();
+        this.toastrService.success(`Congratulations! ${this.playName} was created with success!`,'Playlist Created!');},
+      (error) => {
+          this.toastrService.error('Something happened.', 'Error!');;
         }
         );
   }
 
   updatePlaylist(){
-    const body = {name: this.playName};
+    const body = {name: this.changeName};
 
     this.http.put<any>("http://localhost:5098/api/Playlist/" + this.selected.playlistId, body).subscribe(
               (response) => {
                 this.httpLoad();
+                this.toastrService.info('Your playlist name has been changed!', 'Playlist updated!');
               },
               (error) => {
                 this.httpLoad();
@@ -79,8 +85,9 @@ export class PlaylistHubComponent implements OnInit{
 
   deletePlaylist(){
     this.http.delete(`http://localhost:5098/api/Playlist/` + this.selected.playlistId).subscribe(
-      (response) => {console.log('Deleted with success')
-            this.httpLoad()},
+      (response) => {
+            this.httpLoad()
+            this.toastrService.warning(`Your playlist ${this.selected.name} was deleted!`, 'Deleted Playlist!');},
             (error) => {
               this.httpLoad();
             });
@@ -89,7 +96,8 @@ export class PlaylistHubComponent implements OnInit{
   deleteSong(){
     this.http.delete(`http://localhost:5098/api/Playlist/`+ this.selected.playlistId + `/remove-music/` + this.selectedMusic.songId).subscribe(
       (response) => {console.log('Deleted with success', response)
-            this.httpLoad()},
+            this.httpLoad();
+            this.toastrService.warning(`Your song was removed!`, 'Removed song!');},
             (error) => {
               this.httpLoad();
             });
@@ -98,6 +106,7 @@ export class PlaylistHubComponent implements OnInit{
   addMusic(songId: string){
     this.http.post(`http://localhost:5098/api/Playlist/`+ this.selected.playlistId + `/add-music/` + songId, '').subscribe(
       (response) => {console.log('Added with success')
+            this.toastrService.success(`Congratulations! Your music has been added with sucess!`,'Music Added!');
             this.httpLoad()},
             (error) => {
               this.httpLoad();
@@ -121,4 +130,5 @@ export class PlaylistHubComponent implements OnInit{
     this.searchResults = data;
     });
   }
+
 }

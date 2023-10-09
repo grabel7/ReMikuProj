@@ -14,6 +14,7 @@ public class Music
     public int SongId { get; set; }
     
     public string? VideoName { get; set; }
+    public string? ThumbImgUrl { get; set; }
     public string? Description { get; set; }
     [DataType(DataType.DateTime)]
     public DateTime? VideoUploaded { get; set; }

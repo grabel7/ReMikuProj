@@ -37,10 +37,12 @@ namespace mikuProj.API.Controllers
             {
                 PlaylistId = playlist.PlaylistId,
                 Name = playlist.Name,
+                PlaylistImg = playlist.PlaylistImg,
                 Musics = playlist.Musics.Select(music => new MusicDto
                 {
                     SongId = music.SongId,
                     VideoName = music.VideoName,
+                    ThumbImgUrl = music.ThumbImgUrl,
                     Description = music.Description,
                     VideoUploaded = music.VideoUploaded,
                     VideoId = music.VideoId,
@@ -67,14 +69,15 @@ namespace mikuProj.API.Controllers
             }
 
             // Crie uma nova instância da classe Playlist com o nome fornecido
-            var novaPlaylist = new Playlist
+            var newPlaylist = new Playlist
             {
                 Name = playlistCreateDto.Name,
+                PlaylistImg = "https://i.ytimg.com/vi/PPg8qKIbIYU/broken.jpg",
                 Musics = new List<Music>() // Inicialize a lista de músicas como vazia
             };
 
             // Adicione a playlist ao contexto de dados
-            _context.Playlists.Add(novaPlaylist);
+            _context.Playlists.Add(newPlaylist);
 
             try
             {
@@ -106,6 +109,8 @@ namespace mikuProj.API.Controllers
                 playlist.Musics.Add(music);
 
                 music.Playlists.Add(playlist);
+                
+                playlist.PlaylistImg = music.ThumbImgUrl;
 
                 // Tente salvar as alterações no banco de dados
                 await _context.SaveChangesAsync();

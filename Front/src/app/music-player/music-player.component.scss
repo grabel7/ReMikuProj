@@ -3,6 +3,8 @@
   font-family: 'Fjalla One', sans-serif;
   color: #fafafa;
   text-shadow: 0 0 3px #000000, 0 0 5px #000000;
+/*   transition: width 2s, height 4s; */
+border: 2px solid red;
 }
 
 .img-vynil {
@@ -15,7 +17,46 @@
   background-size: cover;
   border-radius: 50%;
   transition: transform 0.5s ease;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4); 
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+/*   clip-path: circle(50% at 50% 50%); */
+}
+#vynil-bl {
+  position: relative;
+  max-width: 275px;
+  max-height: 275px;
+  overflow: hidden;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+#thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  z-index: 1; /* Coloca a #thumb na frente da #vynil-bl */
+  clip-path: circle(50% at 50% 50%); /* Mantém a forma circular da #thumb */
+}
+
+.imported{
+  width: 70%;
+}
+
+#vynil-bl img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+
+.img-front {
+  z-index: 999;
+}
+
+#thumb {
+  z-index: -1;
 }
 
 .vinyl-rotating {
@@ -59,6 +100,69 @@ a {
   align-items: center;
   justify-content: center;
   box-shadow: 3px 2px 7px 1px rgba(0, 0, 0, 0.24);
+}
+
+#playlist-sec::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
+  background-color: #000000; /* or add it to the track */
+}
+
+/* Add a thumb */
+#playlist-sec::-webkit-scrollbar-thumb {
+  background: #000;
+}
+
+#playlist-sec ul {
+  cursor: move;
+  display: flex;
+  width: 100%;
+  margin-right: 25%;
+}
+
+
+#playlist-sec li:nth-child(2) {
+  margin: auto;
+}
+
+.playlist img {
+  scroll-padding-right: 10%;
+}
+
+.playlist ul {
+  overflow-y: hidden;
+  overflow-x: scroll;
+  white-space: nowrap;
+  scroll-snap-type: x mandatory;
+  border: unset;
+  box-shadow: unset;
+  background-color: unset;
+  font-size: 1.4rem;
+  margin-right: 25px;
+  color: #fafafa;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 3px 2px 7px 1px rgba(0, 0, 0, 0.24);
+  height:140px;
+  width:420px;
+}
+
+.playlist li {
+  display: inline-flex;
+  margin-right: 25px;
+  box-shadow: 3px 2px 7px 1px rgba(0, 0, 0, 0.24);
+  position: relative;
+}
+
+#p-length {
+  position: absolute; /* Isso permite posicionar de forma absoluta */
+  top: 0; /* Coloca no canto inferior */
+  right: 0; /* Coloca no canto direito */
+}
+
+
+.cont-playlist {
+  display:inline;
 }
 
 .btn:active {
