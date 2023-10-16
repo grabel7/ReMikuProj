@@ -4,9 +4,11 @@ import { ModalComponent } from './modal-screens/modal-component/modal-component.
 
 //Views
 import { MusicViewComponent } from './views/music-view/music-view.component';
+import { HelpViewComponent } from './views/help-view/help-view.component';
 
 const routes: Routes = [
-  { path: 'musicplayer', component: MusicViewComponent }
+  { path: 'musicplayer', component: MusicViewComponent },
+  { path: 'help', component: HelpViewComponent }
 ];
 
 @NgModule({

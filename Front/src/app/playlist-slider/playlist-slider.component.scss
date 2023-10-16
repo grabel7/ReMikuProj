@@ -1,0 +1,31 @@
+.carousel-container {
+  width: 50%;
+  overflow: hidden;
+  position: relative;
+  justify-content: center;
+}
+
+.carousel-wrapper {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+
+.playlist {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.playlist-item {
+  flex: 0 0 auto;
+  width: 220px; /* Largura de cada item do carrossel */
+  scroll-snap-align: start;
+}
+
+.playlist-item img {
+  max-width: 100%;
+  height: auto;
+}

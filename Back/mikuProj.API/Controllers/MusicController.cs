@@ -46,7 +46,7 @@ namespace mikuProj.API.Controllers
 
         [HttpGet("{id}")]
         public Music GetById(int id){
-            return _context.Musics.FirstOrDefault(music => music.SongId == id);
+            return _context.Musics.First(music => music.SongId == id);
          }
 
         [HttpGet("{id}/favorite")] // Get Favorite State by Id
@@ -65,7 +65,7 @@ namespace mikuProj.API.Controllers
         }
         [HttpGet("{videoId}/name")] // Get Music Name By Id
         public ActionResult<string> GetNameByVideoId(string videoId){
-            Music music = _context.Musics.FirstOrDefault(music => music.VideoId == videoId);
+            Music music = _context.Musics.First(music => music.VideoId == videoId);
 
             if (music == null)
             {

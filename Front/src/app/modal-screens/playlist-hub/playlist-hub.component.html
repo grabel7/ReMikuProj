@@ -27,12 +27,12 @@
 
 
           <div [collapse]=isCollapsed [isAnimated]=true>
-            <input type="text" [(ngModel)]="playName" placeholder="Enter your Playlist Name">
+            <input type="text" [(ngModel)]="playName" placeholder="Enter your Playlist Name" maxlength="25">
             <button class="btn btn-primary btn-sm" (click)="createPlaylist()">Ok</button>
           </div>
 
           <div [collapse]=isCollapseChange [isAnimated]=true>
-            <input type="text" [(ngModel)]="changeName" placeholder="Change Playlist Name">
+            <input type="text" [(ngModel)]="changeName" placeholder="Change Playlist Name" maxlength="25">
             <button class="btn btn-primary btn-sm" (click)="updatePlaylist()">Ok</button>
           </div>
         </div>

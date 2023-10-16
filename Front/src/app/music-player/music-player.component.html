@@ -148,7 +148,7 @@
 <h3>{{playlistFavorite | json}}</h3>
 <br>
 {{player | json}} -->
-
+<!--
 <div class="container d-flex justify-content-center w-50 cont-playlist" *ngIf=!isPlaylistCollapsed>
   <section id="playlist-sec">
      <ul class="playlist" style="height:140px;width:420px;overflow-y:hidden;overflow-x:auto;white-space: nowrap;scroll-snap-type: x mandatory;">
@@ -159,7 +159,9 @@
       </li>
     </ul>
 </section>
-</div>
+</div> -->
+
+<app-playlist-slider layout="row" layout-align="center center" [collapse]=isPlaylistCollapsed [isAnimated]=true></app-playlist-slider>
 
 <div class="container d-flex justify-content-center w-50">
  <div class="d-flex">

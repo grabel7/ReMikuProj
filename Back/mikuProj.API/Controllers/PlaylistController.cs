@@ -68,6 +68,7 @@ namespace mikuProj.API.Controllers
                 playlistCreateDto.Name = "My Random Playlist";
             }
 
+            if (playlistCreateDto.Name.Length <= 25) {
             // Crie uma nova instância da classe Playlist com o nome fornecido
             var newPlaylist = new Playlist
             {
@@ -76,8 +77,13 @@ namespace mikuProj.API.Controllers
                 Musics = new List<Music>() // Inicialize a lista de músicas como vazia
             };
 
-            // Adicione a playlist ao contexto de dados
+            // Adicione a playlist ao contexto de dados se menor do que 25 cáracteres
             _context.Playlists.Add(newPlaylist);
+            } else {
+                throw new ArgumentException(
+                    "Your playlist name exceeds the permitted size"
+                );
+            }
 
             try
             {
@@ -128,15 +134,19 @@ namespace mikuProj.API.Controllers
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePlaylist(int id, [FromBody] PlaylistCreateDto playlistCreateDto){
-           
+
             var playlist = await _context.Playlists.FindAsync(id);
 
             if (playlist == null)
             {
                 return NotFound("Entry not found.");
             }
-
-            playlist.Name = playlistCreateDto.Name;
+            if (playlistCreateDto.Name.Length <= 25) {
+            playlist.Name = playlistCreateDto.Name;    
+            } else {
+                throw new ArgumentException("Playlist new name exceed the permitted size");
+            }
+            
 
             try
             {

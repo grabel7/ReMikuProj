@@ -19,6 +19,9 @@ import { LoadingComponent } from './loading/loading.component';
 import { MusicViewComponent } from './views/music-view/music-view.component';
 import { EraseComponent } from './modal-screens/erase/erase.component';
 import { PlaylistHubComponent } from './modal-screens/playlist-hub/playlist-hub.component';
+/* import { PlaylistSliderComponent } from './playlist-slider/playlist-slider.component'; */
+import { HelpViewComponent } from './views/help-view/help-view.component';
+import { PlaylistSliderComponent } from './playlist-slider/playlist-slider.component';
 
 
 
@@ -31,7 +34,10 @@ import { PlaylistHubComponent } from './modal-screens/playlist-hub/playlist-hub.
     LoadingComponent,
     MusicViewComponent,
     EraseComponent,
-    PlaylistHubComponent
+    PlaylistHubComponent,
+/*     PlaylistSliderComponent, */
+    HelpViewComponent,
+PlaylistSliderComponent
   ],
   providers: [DatePipe],
   imports: [
