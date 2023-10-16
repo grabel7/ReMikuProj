@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { SearchServiceService } from 'src/app/Services/search-service.service';
+import { PlaylistImportService } from 'src/app/Services/playlist-import.service';
 
 @Component({
   selector: 'app-playlist-hub',
@@ -33,7 +34,8 @@ export class PlaylistHubComponent implements OnInit{
   constructor(public activeModal: NgbActiveModal,
               private http: HttpClient,
               private searchService: SearchServiceService,
-              private toastrService: ToastrService) { }
+              private toastrService: ToastrService,
+              private playlistImportService: PlaylistImportService) { }
 
   closeModal() {
     this.activeModal.close('Modal fechado');
@@ -58,11 +60,11 @@ export class PlaylistHubComponent implements OnInit{
     const dataToPost = {
       name: this.playName
     };
-
     this.http.post(url, dataToPost).subscribe(
       (response) => {
         this.httpLoad();
-        this.toastrService.success(`Congratulations! ${this.playName} was created with success!`,'Playlist Created!');},
+        this.toastrService.success(`Congratulations! ${this.playName} was created with success!`,'Playlist Created!');
+        this.playlistImportService.reload.emit();},
       (error) => {
           this.toastrService.error('Something happened.', 'Error!');;
         }
@@ -76,6 +78,7 @@ export class PlaylistHubComponent implements OnInit{
               (response) => {
                 this.httpLoad();
                 this.toastrService.info('Your playlist name has been changed!', 'Playlist updated!');
+                this.playlistImportService.reload.emit();
               },
               (error) => {
                 this.httpLoad();
@@ -87,7 +90,8 @@ export class PlaylistHubComponent implements OnInit{
     this.http.delete(`http://localhost:5098/api/Playlist/` + this.selected.playlistId).subscribe(
       (response) => {
             this.httpLoad()
-            this.toastrService.warning(`Your playlist ${this.selected.name} was deleted!`, 'Deleted Playlist!');},
+            this.toastrService.warning(`Your playlist ${this.selected.name} was deleted!`, 'Deleted Playlist!');
+            this.playlistImportService.reload.emit();},
             (error) => {
               this.httpLoad();
             });

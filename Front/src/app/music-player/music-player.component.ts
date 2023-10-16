@@ -7,6 +7,7 @@ import { ModalComponent } from '../modal-screens/modal-component/modal-component
 import { Subscription } from 'rxjs';
 
 //Services
+import { PlaylistImportService } from '../Services/playlist-import.service';
 import { VideoImportService } from '../Services/video-import.service';
 import { HttpClient } from '@angular/common/http';
 import { FavoriteService } from '../Services/UserActionsService';
@@ -31,6 +32,7 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
       favorite: false}
     ];
 
+  playlistId: number = -1;
   private eventListeners: Function[] = []
 
   isPaused: boolean = false;
@@ -69,13 +71,14 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
 
   isFavorited: boolean = false;
   isOnlyFav:boolean = false;
+  isOnlyPlaylist: boolean = false;
 
   player: any;
 
   private playerCreated: any;
   private youtubeApiLoadPromise: Promise<void> | undefined;
   private youtubeApiLoaded: boolean | undefined;
-  private callFuncSubscription: Subscription | undefined;; // Declare como uma propriedade da classe
+  private callFuncSubscription: Subscription | undefined; // Declare como uma propriedade da classe
   private intervalId: any;
   private srcCreated: boolean | undefined;
 
@@ -94,7 +97,8 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
               private favoriteService: FavoriteService,
               private titleService:Title,
               private router: Router,
-              private datePipe: DatePipe
+              private datePipe: DatePipe,
+              private playlistImportService: PlaylistImportService
               ) {}
 
   //progressPercentage: number = 50; // Por exemplo, 50% de progresso
@@ -112,6 +116,13 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
 
     this.callFuncSubscription = this.videoImportService.callFunc.subscribe(() => {
       this.httpTest(); // Reload the GET function after a POST
+    });
+
+    this.callFuncSubscription = this.playlistImportService.playlistChanged.subscribe(async () => {
+      this.playlistId = this.playlistImportService.idNum;
+      this.isOnlyPlaylist = true;
+      await this.httpTest();
+      this.skipSong();
     });
 
     await this.httpTest(); // Aguarda a conclusão do carregamento
@@ -377,15 +388,22 @@ public async httpTest(): Promise<void>{
       this.currentIndex = 0;
       const musicResponse = await this.http.get('http://localhost:5098/api/Music').toPromise();
       this.videoIds = musicResponse;
-    } else {
+    }
+    else {
       this.currentIndex = 0;
       const musicResponse = await this.http.get('http://localhost:5098/playlist/favorites').toPromise();
       this.videoIds = musicResponse;
     }
 
+    if (this.isOnlyPlaylist && this.playlistId != -1){
+      this.currentIndex = 0;
+      const musicResponse = await this.http.get(`http://localhost:5098/api/Playlist/${this.playlistId}/musics`).toPromise();
+      this.videoIds = musicResponse;
+    }
+
     const playlistResponse = await this.http.get('http://localhost:5098/api/Playlist').toPromise();
     this.playlist = playlistResponse;
-    
+
     const favoritesResponse = await this.http.get('http://localhost:5098/api/Favorites/').toPromise();
     this.playlistFavorite = favoritesResponse;
     this.checkFavorites();

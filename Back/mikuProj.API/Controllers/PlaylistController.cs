@@ -57,6 +57,91 @@ namespace mikuProj.API.Controllers
 
             return Ok(playlistsDto);
         }
+/*         [HttpGet("{id}/PlaylistMusics")]
+         public async Task<IActionResult> GetPlaylistMusics(int id){
+             // Check if exists in "Playlists"
+            var playlists = await _context.Playlists
+                .Include(p => p.Musics)
+                .ToListAsync();
+            var playlist = playlists.First(pl => pl.PlaylistId == id);
+
+            if (playlist == null)
+            {
+                return NotFound("Entry not found.");
+            }
+
+            var music = playlist.Musics;
+            return Ok(music); // Return 204 (No Content), Successs
+         } */
+
+         [HttpGet("{id}")]
+        public async Task<ActionResult<PlaylistDto>> GetPlaylistById(int id)
+        {
+            var playlist = await _context.Playlists
+                .Include(p => p.Musics)
+                .FirstOrDefaultAsync(p => p.PlaylistId == id);
+
+            if (playlist == null)
+            {
+                return NotFound();
+            }
+
+            var playlistDto = new PlaylistDto
+            {
+                PlaylistId = playlist.PlaylistId,
+                Name = playlist.Name,
+                PlaylistImg = playlist.PlaylistImg,
+                Musics = playlist.Musics.Select(music => new MusicDto
+                {
+                    SongId = music.SongId,
+                    VideoName = music.VideoName,
+                    ThumbImgUrl = music.ThumbImgUrl,
+                    Description = music.Description,
+                    VideoUploaded = music.VideoUploaded,
+                    VideoId = music.VideoId,
+                    Channel = music.Channel,
+                    ChannelId = music.ChannelId,
+                    Views = music.Views,
+                    Language = music.Language,
+                    Favorite = music.Favorite,
+                    UserUploaded = music.UserUploaded
+                }).ToList()
+            };
+
+            return playlistDto;
+        }
+
+        [HttpGet("{id}/musics")]
+        public async Task<ActionResult<IEnumerable<MusicDto>>> GetPlaylistMusics(int id)
+        {
+            var playlist = await _context.Playlists
+                .Include(p => p.Musics)
+                .FirstOrDefaultAsync(p => p.PlaylistId == id);
+
+            if (playlist == null)
+            {
+                return NotFound();
+            }
+
+            var musicsDto = playlist.Musics.Select(music => new MusicDto
+            {
+                SongId = music.SongId,
+                VideoName = music.VideoName,
+                ThumbImgUrl = music.ThumbImgUrl,
+                Description = music.Description,
+                VideoUploaded = music.VideoUploaded,
+                VideoId = music.VideoId,
+                Channel = music.Channel,
+                ChannelId = music.ChannelId,
+                Views = music.Views,
+                Language = music.Language,
+                Favorite = music.Favorite,
+                UserUploaded = music.UserUploaded
+            }).ToList();
+
+            return musicsDto;
+        }
+
 
 
         [HttpPost]

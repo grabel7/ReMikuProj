@@ -3,6 +3,7 @@ import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { VideoImportService } from '../../Services/video-import.service';
 import { HttpClient } from '@angular/common/http';
+import { PlaylistImportService } from 'src/app/Services/playlist-import.service';
 
 
 @Component({
@@ -14,6 +15,7 @@ export class ModalComponent {
   constructor(
     public activeModal: NgbActiveModal,
     private videoImportService: VideoImportService,
+    private playlistImportService: PlaylistImportService,
     private http: HttpClient
   ) {  }
 
@@ -69,6 +71,7 @@ export class ModalComponent {
         this.postData(this.videoId, this.favorite).subscribe((response) => {
           console.log('Resposta do servidor:', response);
           this.videoImportService.callFunc.emit(); // Reload GET function
+          this.playlistImportService.reload.emit();
         }, (error) => {
           console.error('Erro:', error);
         });

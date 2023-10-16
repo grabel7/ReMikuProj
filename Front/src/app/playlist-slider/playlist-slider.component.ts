@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { PlaylistImportService } from '../Services/playlist-import.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-playlist-slider',
@@ -9,15 +11,21 @@ import { Component, OnInit } from '@angular/core';
 export class PlaylistSliderComponent implements OnInit {
   playlist: any = [  ];
   currentIndex = 0; // Índice atual do item no carrossel
+  private callFuncSubscription: Subscription | undefined;
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private playlistImportService: PlaylistImportService
     ) {}
 
   ngOnInit(): void {
 
     this.httpTest();
-    
+
+    this.callFuncSubscription = this.playlistImportService.reload.subscribe(() => {
+      this.httpTest(); // Reload the GET function after a POST
+    });
+
     setInterval(() => {
       this.next(); // Chame a função para avançar para o próximo item
     }, 5000); // Defina o tempo em milissegundos
@@ -36,5 +44,10 @@ export class PlaylistSliderComponent implements OnInit {
     } else {
       this.currentIndex = 0; // Volte ao primeiro item quando chegar ao último
     }
+  }
+
+  playclick(id: number) {
+  this.playlistImportService.playlist(id);
+  this.playlistImportService.playlistChanged.emit();
   }
 }

@@ -15,6 +15,7 @@ namespace mikuProj.API.Models
         public string? PlaylistImg { get; set; } 
         public required string Name { get; set; } 
         public List<Music> Musics { get; set; } = new List<Music>();
+
     }
 
     public class PlaylistCreateDto

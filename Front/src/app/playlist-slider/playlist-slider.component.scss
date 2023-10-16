@@ -1,8 +1,15 @@
+
 .carousel-container {
-  width: 50%;
+  width: 100%;
   overflow: hidden;
   position: relative;
   justify-content: center;
+}
+
+@media (hover:none), (hover:on-demand) {
+  .carousel-container {
+    width: 100%;
+  }
 }
 
 .carousel-wrapper {
@@ -17,6 +24,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  padding-top: 15px;
 }
 
 .playlist-item {
@@ -29,3 +37,4 @@
   max-width: 100%;
   height: auto;
 }
+
