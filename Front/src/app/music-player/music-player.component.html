@@ -17,6 +17,7 @@
 
 </div>
 
+<!-- Info container -->
 <div class="container d-flex justify-content-center text-center">
   <div class="d-block mb-3">
     <h3>{{videoTitle}}</h3> <a class="btn" (click)="toggleFavorite()">
@@ -49,6 +50,7 @@
 
 </div>
 
+<!-- Audio Progress Container -->
 <div class="container audio-progress">
 
   <div class="progress-bar rounded bar" (click)="seekToPosition($event)">
@@ -73,10 +75,11 @@
 
 </div>
 
+<!-- Buttons -->
 <div class="container d-flex justify-content-center w-50">
   <div class="audio-btns d-flex flex-column ">
 
-
+      <!-- Primary Buttons -->
       <div class="audio-btns p-2 flex-grow-1">
 
         <button (click)="previousVideo()" class="btn skip-back">
@@ -97,43 +100,40 @@
 
       </div>
 
+      <!-- Secondary Buttons -->
       <div class="audio-btns p-2 flex-grow-1">
 
-
+        <!-- Playlist Slizer Button -->
         <a class="btn" (click)="isPlaylistCollapsed=!isPlaylistCollapsed">
           <box-icon color="white" type='solid' name='playlist'></box-icon>
         </a>
 
+        <!-- Menu Collapse Button -->
         <button (click)="isCollapsed = !isCollapsed" class="btn">
           <box-icon color="white" name='menu' ></box-icon>
         </button>
         <div class="collapse navbar-collapse" [collapse]=isCollapsed [isAnimated]=true id="navbarNav">
 
+            <a class="btn" (click)="openModal()" aria-current="page">
+              <box-icon color="white" type='solid' name='down-arrow-circle'></box-icon>
+            </a>
 
-              <a class="btn" (click)="openModal()" aria-current="page">
-                <box-icon color="white" type='solid' name='down-arrow-circle'></box-icon>
-              </a>
+            <a class="btn" (click)="openTrash()">
+              <box-icon color="white" type='solid' name='trash'></box-icon>
+            </a>
 
+            <a class="btn" (click)="isHided=!isHided">
+                <box-icon color="white" *ngIf="isHided" type='solid' name='ghost'></box-icon>
+                <box-icon color="white" *ngIf="!isHided" name='ghost'></box-icon>
+            </a>
 
-              <a class="btn" (click)="openTrash()">
-                <box-icon color="white" type='solid' name='trash'></box-icon>
-              </a>
-
-
-              <a class="btn" (click)="isHided=!isHided">
-                  <box-icon color="white" *ngIf="isHided" type='solid' name='ghost'></box-icon>
-
-                  <box-icon color="white" *ngIf="!isHided" name='ghost'></box-icon>
-
-              </a>
-
-              <a class="btn" (click)="openPlaylistHub()">
-                <box-icon color="white" type='solid' name='videos'></box-icon>
-              </a>
-
+            <a class="btn" (click)="openPlaylistHub()">
+              <box-icon color="white" type='solid' name='videos'></box-icon>
+            </a>
 
         </div>
 
+        <!-- Only Favorites Button -->
         <button (click)="onlyFav()" class="btn">
           <box-icon  color="white" type='solid' *ngIf="!isOnlyFav" name='star'></box-icon>
           <box-icon  color="yellow" type='solid' *ngIf="isOnlyFav" name='star'></box-icon>
@@ -161,9 +161,10 @@
 </section>
 </div> -->
 
+<!-- Playlist Slider Component -->
 <app-playlist-slider style="width: 100%; text-align: center; background-color: #0f0f0fbb; display: flex; justify-content: center; align-items: center;" [collapse]=isPlaylistCollapsed [isAnimated]=true></app-playlist-slider>
 
-
+<!-- Volume -->
 <div class="container d-flex justify-content-center w-50">
  <div class="d-flex">
         <a (click)="muted()" class="" >

@@ -56,6 +56,7 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   iconName: string = this.isPaused ? 'play' : 'pause'
 
   //API
+  videoBroken: string = 'https://i.ytimg.com/vi/break/default.jpg';
   videoDescription: string | undefined;
   videoChannelId: string | undefined;
   videoViews: string = '';
@@ -82,12 +83,6 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   private intervalId: any;
   private srcCreated: boolean | undefined;
 
-
-
-  /* this.videoIds[this.currentIndex].favorite; //Estudar async */
-  //isFavorite: boolean = ;
-
-
   private videoSubscription: Subscription  | null = null; // Inicialize com null
 
 
@@ -101,12 +96,6 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
               private playlistImportService: PlaylistImportService
               ) {}
 
-  //progressPercentage: number = 50; // Por exemplo, 50% de progresso
-
-  //get progressWidth(): string {
-    //return `${this.progressPercentage}%`;
-  //}
-
   async ngOnInit() {
     this.loadYouTubeApi(); // Aguarda o carregamento da API do YouTube
 
@@ -114,20 +103,45 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
 
     this.isMobile = this.checkIfMobile();
 
-    this.callFuncSubscription = this.videoImportService.callFunc.subscribe(() => {
-      this.httpTest(); // Reload the GET function after a POST
+    //After a new Uploaded Music:
+    this.callFuncSubscription = this.videoImportService.callFunc.subscribe(async () => {
+      await this.httpTest(); // Reload the GET function after a POST
+      this.isOnlyPlaylist = false; //Turn off Only PL.
+
+      this.UploadedImg();
     });
 
+    //After a playlist select:
     this.callFuncSubscription = this.playlistImportService.playlistChanged.subscribe(async () => {
+      this.isOnlyFav = false; //Close the Only Fav function
       this.playlistId = this.playlistImportService.idNum;
-      this.isOnlyPlaylist = true;
+      this.isOnlyPlaylist = true; //Turn on the Only Playlist Function
       await this.httpTest();
-      this.skipSong();
+
+      this.isPlaylistCollapsed = true; //Close Playlist Component
+      this.refresh; // Update Music Data
     });
+
+    this.playlistImportService.favoriteSelect.subscribe(async() => {
+      this.isOnlyFav = true; //Open the Only Fav Function
+      await this.httpTest();
+
+      this.isPlaylistCollapsed = true; //Close Playlist Component
+      this.refresh; // Update Music Data
+    })
+
+    this.playlistImportService.homeSelect.subscribe(async() => {
+      this.isOnlyFav = false; //Close the Only Fav function
+      this.isOnlyPlaylist = false; //Turn off Only PL.
+      await this.httpTest();
+
+      this.isPlaylistCollapsed = true; //Close Playlist Component
+      this.refresh; // Update Music Data
+    })
 
     await this.httpTest(); // Aguarda a conclusão do carregamento
-
-
+    this.UploadedImg();
+    this.FavImg();
 
     this.intervalId = setInterval(() => {
       const playerVid = document.querySelector('#player') as HTMLElement;
@@ -142,9 +156,30 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
       this.updateProgressBar();
     }, 100); // Intervalo definido para 100
 
-    // Após a conclusão de todas as operações assíncronas, você pode definir isLoadingChange como false
     this.createYouTubePlayer();
+  }
 
+  UploadedImg(){
+    if (this.videoIds[this.videoIds.length - 1].thumbImgUrl != null){
+      this.playlistImportService.imgChange(this.videoIds[this.videoIds.length - 1].thumbImgUrl);
+      this.playlistImportService.uploadLength = this.videoIds.length;
+      this.playlistImportService.reload.emit();
+    } else {
+      this.playlistImportService.imgChange(this.videoBroken);
+      this.playlistImportService.reload.emit();
+    }
+  }
+
+  FavImg(){
+    if (this.playlistFavorite[this.playlistFavorite.length - 1].thumbImgUrl != null){
+      this.playlistImportService.imgFavChange(this.playlistFavorite[this.playlistFavorite.length - 1].thumbImgUrl)
+      this.playlistImportService.favLength = this.playlistFavorite.length;
+      this.playlistImportService.reload.emit();
+    } else {
+      console.log('anulou')
+      this.playlistImportService.imgFavChange(this.videoBroken);
+      this.playlistImportService.reload.emit();
+    }
   }
 
 /*   ngOnChanges(changes: SimpleChanges): void {
@@ -360,7 +395,6 @@ muted(){
   if (this.volume > 0) {
 
     actualVol = this.volume;
-
   }
 
 
@@ -383,22 +417,54 @@ openModal() {
 }
 public async httpTest(): Promise<void>{
   try{
-    if (!this.isOnlyFav && this.playlistFavorite)
-    {
-      this.currentIndex = 0;
-      const musicResponse = await this.http.get('http://localhost:5098/api/Music').toPromise();
-      this.videoIds = musicResponse;
-    }
-    else {
-      this.currentIndex = 0;
-      const musicResponse = await this.http.get('http://localhost:5098/playlist/favorites').toPromise();
-      this.videoIds = musicResponse;
-    }
+    let musicResponse; // for the switch response
 
-    if (this.isOnlyPlaylist && this.playlistId != -1){
-      this.currentIndex = 0;
-      const musicResponse = await this.http.get(`http://localhost:5098/api/Playlist/${this.playlistId}/musics`).toPromise();
-      this.videoIds = musicResponse;
+    switch (true) {
+
+      default:
+        this.currentIndex = 0;
+        musicResponse = await this.http.get('http://localhost:5098/api/Music').toPromise();
+        this.videoIds = musicResponse;
+        this.skipSong();
+        this.previousVideo();
+        break;
+
+      case (this.isOnlyFav):
+        this.currentIndex = 0;
+
+        try {
+          musicResponse = await this.http.get('http://localhost:5098/playlist/favorites').toPromise();
+          this.videoIds = musicResponse;
+          if (!this.videoIds.length){
+            throw new Error("There is no Favorite Musics.");
+          }
+          this.skipSong();
+          this.previousVideo();
+        } catch(error){
+          this.isOnlyFav = false;
+          this.httpTest();
+        }
+
+        break;
+
+      case (this.isOnlyPlaylist && this.playlistId !== -1):
+        this.currentIndex = 0;
+
+        try {
+          const response = await this.http.get(`http://localhost:5098/api/Playlist/${this.playlistId}/musics`).toPromise();
+          this.videoIds = response;
+          console.log(this.videoIds);
+          if (!this.videoIds.length){
+            throw new Error("Empty playlist.");
+          }
+          this.skipSong();
+          this.previousVideo();
+        } catch (error) {
+          this.isOnlyPlaylist = false;
+          this.httpTest();
+        }
+
+        break;
     }
 
     const playlistResponse = await this.http.get('http://localhost:5098/api/Playlist').toPromise();
@@ -518,6 +584,7 @@ toggleFavorite() {
 
     // Atualiza o estado local do componente
     this.isFavorited = isFavorited;
+    this.FavImg();
 
     console.log(`Música ${isFavorited ? 'adicionada' : 'removida'} dos favoritos localmente.`);
 }

@@ -11,7 +11,12 @@ import { Subscription } from 'rxjs';
 export class PlaylistSliderComponent implements OnInit {
   playlist: any = [  ];
   currentIndex = 0; // Índice atual do item no carrossel
+  lastUpload: string =  this.playlistImportService.lastUpload;
+  favImg: string = this.playlistImportService.favoriteImg;
+  favLength: number = 0;
+
   private callFuncSubscription: Subscription | undefined;
+  uploadLength: number = 0;
 
   constructor(
     private http: HttpClient,
@@ -35,6 +40,10 @@ export class PlaylistSliderComponent implements OnInit {
 
       const playlistResponse = await this.http.get('http://localhost:5098/api/Playlist').toPromise();
       this.playlist = playlistResponse;
+      this.lastUpload =  this.playlistImportService.lastUpload;
+      this.favImg = this.playlistImportService.favoriteImg;
+      this.favLength = this.playlistImportService.favLength;
+      this.uploadLength = this.playlistImportService.uploadLength;
   }
 
   next(): void {
@@ -47,7 +56,21 @@ export class PlaylistSliderComponent implements OnInit {
   }
 
   playclick(id: number) {
-  this.playlistImportService.playlist(id);
-  this.playlistImportService.playlistChanged.emit();
+    this.playlistImportService.playlist(id);
+    this.playlistImportService.playlistChanged.emit();
+    console.log(this.lastUpload)
+  }
+
+  otherclicks(string: string) {
+    switch(string){
+      case 'fav':
+        this.playlistImportService.favoriteSelect.emit(true);
+        break
+
+      case 'home':
+        this.playlistImportService.homeSelect.emit();
+        break
+    }
+
   }
 }
