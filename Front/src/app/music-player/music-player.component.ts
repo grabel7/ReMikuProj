@@ -15,6 +15,7 @@ import { FavoriteService } from '../Services/UserActionsService';
 import { Router, NavigationEnd } from '@angular/router';
 import { EraseComponent } from '../modal-screens/erase/erase.component';
 import { PlaylistHubComponent } from '../modal-screens/playlist-hub/playlist-hub.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-music-player',
@@ -93,7 +94,8 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
               private titleService:Title,
               private router: Router,
               private datePipe: DatePipe,
-              private playlistImportService: PlaylistImportService
+              private playlistImportService: PlaylistImportService,
+              private toastrService: ToastrService
               ) {}
 
   async ngOnInit() {
@@ -436,6 +438,7 @@ public async httpTest(): Promise<void>{
           musicResponse = await this.http.get('http://localhost:5098/playlist/favorites').toPromise();
           this.videoIds = musicResponse;
           if (!this.videoIds.length){
+            this.toastrService.warning(`Now playing your uploaded musics`, `No Favorite Musics`);
             throw new Error("There is no Favorite Musics.");
           }
           this.skipSong();
@@ -455,6 +458,7 @@ public async httpTest(): Promise<void>{
           this.videoIds = response;
           console.log(this.videoIds);
           if (!this.videoIds.length){
+            this.toastrService.warning(`Now playing your uploaded musics`, `Empty Playlist`);
             throw new Error("Empty playlist.");
           }
           this.skipSong();

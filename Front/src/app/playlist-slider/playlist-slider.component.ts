@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { PlaylistImportService } from '../Services/playlist-import.service';
 import { Subscription } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-playlist-slider',
@@ -20,7 +21,8 @@ export class PlaylistSliderComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private playlistImportService: PlaylistImportService
+    private playlistImportService: PlaylistImportService,
+    private toastrService: ToastrService
     ) {}
 
   ngOnInit(): void {
@@ -58,17 +60,19 @@ export class PlaylistSliderComponent implements OnInit {
   playclick(id: number) {
     this.playlistImportService.playlist(id);
     this.playlistImportService.playlistChanged.emit();
-    console.log(this.lastUpload)
+
   }
 
   otherclicks(string: string) {
     switch(string){
       case 'fav':
         this.playlistImportService.favoriteSelect.emit(true);
+        this.toastrService.success(`Now playing your Favorite Musics!`);
         break
 
       case 'home':
         this.playlistImportService.homeSelect.emit();
+        this.toastrService.success(`Now playing your Uploaded Musics!`);
         break
     }
 

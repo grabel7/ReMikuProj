@@ -2,28 +2,28 @@
 
   <div class="carousel-container">
     <div class="carousel-wrapper">
-      <ul class="playlist">
+      <ul class="playlist card-group ">
         <!-- Pre-created Playlists -->
-        <li>
+        <li class="list-group-item card">
           <div class="playlist-item" (click)="otherclicks('home')">
             <img [src]="lastUpload" alt="Image">
             <p>Uploaded Musics</p>
-            <p id="p-length">{{ uploadLength }}</p>
+            <p id="p-length">Videos: {{ uploadLength }}</p>
           </div>
         </li>
-        <li>
+        <li class="list-group-item card">
           <div class="playlist-item" (click)="otherclicks('fav')">
             <img [src]="favImg" alt="Image">
             <p>Favorites</p>
-            <p id="p-length">{{ favLength }}</p>
+            <p id="p-length">Videos: {{ favLength }}</p>
           </div>
         </li>
         <!-- For Each Playlist -->
-        <li *ngFor="let pl of playlist">
+        <li *ngFor="let pl of playlist" class="list-group-item card ">
           <div class="playlist-item" (click)="playclick(pl.playlistId)">
             <img [src]="pl.playlistImg" alt="{{ pl.name }} Image">
             <p>{{ pl.name }}</p>
-            <p id="p-length">{{ pl.musics.length }}</p>
+            <p id="p-length">Videos: {{ pl.musics.length }}</p>
           </div>
         </li>
       </ul>
