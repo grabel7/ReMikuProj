@@ -15,12 +15,24 @@ namespace mikuProj.API.Controllers
     {
 
         private readonly DataContext _context;
-        private readonly string apiKey = "AIzaSyAOpHTEHw0fGKsk4qefNnl5VPJ78WhAtms";
+        private readonly string apiKey;
 
         public MusicController(DataContext context)
         {
             _context = context;
+            apiKey = LoadConfig();
         }
+
+    private string LoadConfig()
+    {
+        IConfiguration config = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("secrets.json")
+            .Build();
+
+        string apiKey = config.GetSection("AppSettings")["ApiKey"];
+        return apiKey;
+    }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Music>>> GetMusics()
