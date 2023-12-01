@@ -66,4 +66,4 @@ Your contributions are welcome! Feel free to open a Pull Request, and I'll condu
 
 ## License
 
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). See [LICENSE.md](https://opensource.org/licenses/MIT) for details.
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). See [LICENSE.md](https://github.com/grabel7/ReMikuProj/blob/development/LICENSE#L1) for details.
