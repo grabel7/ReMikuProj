@@ -69,6 +69,8 @@ If you wanna keep your settings, like Playlists or Imported Songs, copy "Musics.
 - [C# (ASP.NET API)](https://docs.microsoft.com/en-us/dotnet/csharp/) - Back-end language and framework
 - [SQLite](https://www.sqlite.org/) - Database
 - [BoxIcons](https://boxicons.com/?query=) - Icons
+- [Bootstrap](https://getbootstrap.com/) - Front-end framework for design and layout
+
 
 ## Contributing
 
