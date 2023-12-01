@@ -38,6 +38,15 @@ Ensure you have the following for Remiku:
 - [npm](https://www.npmjs.com)
 - [Visual Studio Code](https://code.visualstudio.com)
 - [.NET SDK](https://dotnet.microsoft.com/download)
+- [Your Own Youtube API Key](#API-KEY)
+
+### API-KEY
+ For Remiku you'll need to use your own API Key, you can generate one by following these steps:
+ 1. Create your project in [YouTube Cloud](https://console.cloud.google.com/apis/dashboard?hl=pt-br&project=mikuproj)
+ 2. Select "[Activate an API](https://console.cloud.google.com/apis/library?hl=pt-br&project=mikuproj)" and choose "YouTube Data API v3"
+ 3. Now, choose "Credentials" on the right menu.
+ 4. Select "Create Credentials" and then "API Key".
+ 5. Copy your API Key and don't share with anyone. Save it, you'll use later on Installation.
   
 ### Installation
 
@@ -45,8 +54,9 @@ To start using Remiku:
 1. Open two consoles, one for the Front-End application and the other for the Back-End.
 2. In Console 1 (Front-End), use: `npm install` (Example directory: ReMikuProj/Front)
 3. In Console 2, navigate to the Back-End directory (ReMikuProj/Back/mikuProj.API) and use `dotnet restore`.
-4. In Console 1, use `ng s` to run the Angular Application.
-5. In Console 2, use `dotnet run` to start the Web API.
+4. Now you'll need to use your generated Api Key. Select "secrets.json" file and replace "example_api_key" with your own key.
+5. In Console 1, use `ng s` to run the Angular Application.
+6. In Console 2, use `dotnet run` to start the Web API.
 
 ## Usage
 
