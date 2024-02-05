@@ -2,20 +2,20 @@
 FROM node:14-alpine AS front-end
 WORKDIR /app/front
 
-COPY ReMikuProj/Front/package*.json ./
+COPY Front/package*.json ./
 RUN npm install
 
-COPY ReMikuProj/Front/ .
+COPY Front/ .
 RUN npm run build
 
 # Estágio 2: Construir o Back-end
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS back-end
 WORKDIR /app/back
 
-COPY ReMikuProj/Back/mikuProj.API/*.csproj ./
+COPY Back/mikuProj.API/*.csproj ./
 RUN dotnet restore
 
-COPY ReMikuProj/Back/mikuProj.API/ .
+COPY Back/mikuProj.API/ .
 RUN dotnet publish -c Release -o out
 
 # Estágio 3: Juntar os Estágios Anteriores
