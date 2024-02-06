@@ -9,7 +9,7 @@ COPY Front/ .
 RUN npm run build
 
 # Estágio 2: Construir o Back-end
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS back-end
+FROM mcr.microsoft.com/dotnet/core/sdk:7.0 AS back-end
 WORKDIR /app/back
 
 COPY Back/mikuProj.API/*.csproj ./
@@ -19,7 +19,7 @@ COPY Back/mikuProj.API/ .
 RUN dotnet publish -c Release -o out
 
 # Estágio 3: Juntar os Estágios Anteriores
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+FROM mcr.microsoft.com/dotnet/core/aspnet:7.0
 WORKDIR /app
 
 COPY --from=front-end /app/front/dist /app/wwwroot
