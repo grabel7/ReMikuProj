@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "HrtnPGqoAQSEgxC23tBCgfyHs/6FYdreeadRSad38ShB9VPLV6zurH/6pjlU7hPqxctxPW83ZdvKP1TyvaVCzQ==",
+  "dgSpecHash": "XzxwpJRlTzKBgStR/n0qhPM2zg05SGfILmUcSKXZSSvHeWrCXT0AmBZ2vLKot6UPKUPpBSQHsRGE0Fu1Cb44fg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Hippler\\Desktop\\Estudos\\FullStack\\este\\ReMikuProj\\back\\mikuproj.api\\mikuProj.API.csproj",
+  "projectFilePath": "C:\\Users\\Hippler\\Documents\\GitHub\\ReMikuProj\\back\\mikuproj.api\\mikuProj.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Hippler\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Hippler\\.nuget\\packages\\microsoft.aspnet.webapi\\5.2.9\\microsoft.aspnet.webapi.5.2.9.nupkg.sha512",
@@ -23,6 +23,7 @@
     "C:\\Users\\Hippler\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\Hippler\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\7.0.0\\microsoft.extensions.caching.abstractions.7.0.0.nupkg.sha512",
     "C:\\Users\\Hippler\\.nuget\\packages\\microsoft.extensions.caching.memory\\7.0.0\\microsoft.extensions.caching.memory.7.0.0.nupkg.sha512",
+    "C:\\Users\\Hippler\\.nuget\\packages\\microsoft.extensions.configuration\\7.0.0\\microsoft.extensions.configuration.7.0.0.nupkg.sha512",
     "C:\\Users\\Hippler\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\7.0.0\\microsoft.extensions.configuration.abstractions.7.0.0.nupkg.sha512",
     "C:\\Users\\Hippler\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\7.0.0\\microsoft.extensions.dependencyinjection.7.0.0.nupkg.sha512",
     "C:\\Users\\Hippler\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\7.0.0\\microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",
