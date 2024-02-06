@@ -13,7 +13,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS back-end
 WORKDIR /app/back
 
 COPY Back/mikuProj.API/*.csproj ./
-RUN dotnet restore
+RUN dotnet restore -p:RestoreUseSkipNonexistentTargets=false -nowarn:msb3202,nu1503
 
 COPY Back/mikuProj.API/ .
 RUN dotnet publish -c Release -o out
