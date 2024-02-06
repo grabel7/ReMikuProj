@@ -22,6 +22,9 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 
+# Adicione a instrução para configurar a porta
+ENV ASPNETCORE_URLS=http://+:5098
+
 COPY --from=front-end /app/front/dist /app/wwwroot
 COPY --from=back-end /app/back/out /app
 
